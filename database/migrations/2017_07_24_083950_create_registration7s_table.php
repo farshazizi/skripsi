@@ -17,11 +17,15 @@ class CreateRegistration7sTable extends Migration
             $table->increments('id');
             $table->integer('id_user')->unsigned();
             $table->string('umur_calon_pasangan');
+            $table->integer('randUmur');
             $table->string('tb_calon_pasangan');
+            $table->integer('randTb');
             $table->string('merokok_calon_pasangan');
             $table->string('penghasilan_calon_pasangan');
+            $table->integer('randPenghasilan');
             $table->string('suku_calon_pasangan');
             $table->string('bb_calon_pasangan');
+            $table->integer('randBb');
             // $table->string('suku_domisili_pasangan');
             $table->string('karakter_pasangan');
             $table->timestamps();

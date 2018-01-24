@@ -15,11 +15,15 @@ class Registration7 extends Model
     public $fillable = [
     	'id_user',
         'umur_calon_pasangan',
+        'randUmur',
     	'tb_calon_pasangan',
+        'randTb',
     	'merokok_calon_pasangan',
     	'penghasilan_calon_pasangan',
+        'randPenghasilan',
         'suku_calon_pasangan',          //kolom baru
         'bb_calon_pasangan',
+        'randBb',
         // 'suku_domisili_pasangan',       //kolom baru
         'karakter_pasangan',
     ];

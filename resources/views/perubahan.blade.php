@@ -1,53 +1,58 @@
 @extends('layouts.app')
+
 @section('content')
 
 {{-- @include('partials/_header') --}}
 <div class="container">
 	<div class="row" style="margin-top: 0%; margin-bottom: 5%">
 		<div class="col-md-6 col-md-offset-3">
-			{!! Form::open(['route' => 'registration2.store']) !!}
-			    
-			    {{ Form::hidden('id_user') }}
+			{!! Form::open(['route' => 'registration7.store']) !!}
 
-			    {{ Form::label('tinggi_badan', 'Tinggi Badan (cm)', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::number('tinggi_badan', null, array('class' => 'form-control', 'required' => '', 'min' => '0', 'maxlength' => '3', 'placeholder' => 'Tinggi badan dalam satuan (cm)')) }}
+				{{ Form::hidden('id_user') }}
 
-			    {{ Form::label('berat_badan', 'Berat Badan (kg)', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::number('berat_badan', null, array('class' => 'form-control', 'required' => '', 'min' => '0', 'maxlength' => '3', 'placeholder' => 'Berat badan dalam satuan (kg)')) }}
+				{{ Form::label('umur_pasangan', 'Kategori umur pasangan Anda', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('umur_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda', 'Parobaya' => 'Parobaya', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
 
-			    {{ Form::label('gol_darah', 'Golongan Darah', array('style' => 'margin-top: 20px')) }}
+				{{ Form::label('tb_calon_pasangan', 'Kategori tinggi badan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('tb_calon_pasangan', ['' => 'Pilihan', 'Pendek' => 'Pendek', 'Sedang' => 'Sedang', 'Tinggi' => 'Tinggi'], null, array('class' => 'form-control', 'required' => '')) }}
+
+				{{ Form::label('merokok_calon_pasangan', 'Apakah Anda menerima calon pasangan yang merokok', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('merokok_calon_pasangan', ['' => 'Pilihan', 'Iya, tidak masalah' => 'Iya, tidak masalah', 'Iya, asalkan berniat untuk berhenti' => 'Iya, asalkan berniat untuk berhenti', 'Tidak, saya tidak suka perokok' => 'Tidak, saya tidak suka perokok'], null, array('class' => 'form-control', 'required' => '')) }}
+
+				{{ Form::label('penghasilan_calon_pasangan', 'Kategori penghasilan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('penghasilan_calon_pasangan', ['' => 'Pilihan', 'Miskin' => '< Rp3.500.000', 'Berkecukupan' => 'Rp3.500.001 - Rp4.000.000', 'Sedang' => 'Rp4.000.001 - Rp6.000.000', 'x' => 'Rp6.000.001 - Rp8.000.000', 'Kaya' => '> Rp8.000.001'], null, array('class' => 'form-control', 'required' => '')) }}
+
+				{{-- {{ Form::label('penghasilan_calon_pasangan', 'Rataan penghasilan calon pasangan per bulan', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::number('penghasilan_calon_pasangan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'ex: 4500000')) }} --}}
+			    {{-- {{ Form::number_format(number)('', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'ex: 4500000')) }} --}}
+
+				{{ Form::label('suku_calon_pasangan', 'Apakah suku calon pasangan Anda penting untuk Anda?', array('style' => 'margin-top: 20px')) }}
 			    <br>
-			    {{-- {{ Form::select('gol_darah', ['' => 'Pilih Golongan Darah', 'A' => 'A', 'B' => 'B', 'AB' => 'AB', 'O' => 'O'], null, array('class' => 'form-control', 'required' => '')) }} --}}
-			    {{ Form::radio('gol_darah', 'A', false, array('required' => '')) }}
-			    {{ Form::label('gol_darah', 'A', array('style' => 'width: 50%')) }}
-
-			    {{ Form::radio('gol_darah', 'B') }}
-			    {{ Form::label('gol_darah', 'B') }}
+			    {{ Form::radio('suku_calon_pasangan', 'Iya', false, array('required' => '')) }}
+			    {{ Form::label('suku_calon_pasangan', 'Iya') }}
 			    <br>
-
-				{{ Form::radio('gol_darah', 'AB') }}
-				{{ Form::label('gol_darah', 'AB', array('style' => 'width: 50%')) }}
-
-				{{ Form::radio('gol_darah', 'O') }}
-				{{ Form::label('gol_darah', 'O') }}
+				{{ Form::radio('suku_calon_pasangan', 'Tidak') }}
+				{{ Form::label('suku_calon_pasangan', 'Tidak') }}
 				<br>
 
-			    {{ Form::label('merokok', 'Apakah Anda Merokok', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::select('merokok', ['' => 'Pilihan Anda', 'Saya merokok' => 'Saya merokok', 'Saya merokok namun berniat untuk berhenti' => 'Saya merokok namun berniat untuk berhenti', 'Saya tidak merokok sama sekali' => 'Saya tidak merokok sama sekali'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::label('bb_calon_pasangan', 'Kategori berat badan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('bb_calon_pasangan', ['' => 'Pilihan', 'Kurus' => 'Kurus', 'Berisi' => 'Berisi', 'Gemuk' => 'Gemuk'], null, array('class' => 'form-control', 'required' => '')) }}
 
-			    {{ Form::label('riwayat_kesehatan', 'Tuliskan riwayat kesehatan Anda', array('style' => 'margin-top: 20px')) }}
+				{{-- {{ Form::label('suku_domisili_pasangan', 'Apakah suku domisili pasangan Anda penting untuk Anda?', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::text('suku_domisili_pasangan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Apakah suku domisili pasangan Anda penting untuk Anda')) }} --}}
+
+			    {{ Form::label('karakter_pasangan', 'Ceritakan karakter pasangan seperti apa yang Anda inginkan', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::textarea('riwayat_kesehatan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Tuliskan riwayat penyakit Anda', 'style' => 'height: 10%; resize: none')) }}
+			    {{ Form::textarea('karakter_pasangan', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 20%', 'placeholder' => 'Ceritakan karakter pasangan seperti apa yang Anda inginkan')) }}
 
 			    {{-- {{ Form::label('#', '* Beri tanda "-" jika tidak ada', array('style' => 'margin-top: 20px; color: red')) }} --}}
 			    <p style="font-size: 12px; color: red; margin-top: 5px">* Beri tanda "-" jika tidak ada</p>
 
-	    		{{ Form::submit('Next', array('class' => 'btn btn-primary btn-block', 'style' => 'margin-top: 3%; margin-bottom: 5%; width: 20%; position: absolute; right: 16px')) }}
-	    		
+			    {{ Form::submit('Next', array('class' => 'btn btn-primary btn-md btn-block', 'style' => 'margin-top: 3%; margin-bottom: 5%; width: 20%; position: absolute; right: 16px')) }}
+
 			{!! Form::close() !!}
 		</div>
 	</div>
 </div>
 @endsection
+{{-- @include('partials/_javascript') --}}

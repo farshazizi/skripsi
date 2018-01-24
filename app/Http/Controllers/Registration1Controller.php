@@ -11,10 +11,6 @@ use DB;
 
 class Registration1Controller extends Controller
 {
-    // public function __construct(){
-    //     $this->middleware('CekPosisi');
-    // }
-
     /**
      * Display a listing of the resource.
      *
@@ -162,10 +158,9 @@ class Registration1Controller extends Controller
             ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
             ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
             ->leftJoin('registration4s', 'users.id', '=', 'registration4s.id_user')
-            ->leftJoin('registration5s', 'users.id', '=', 'registration5s.id_user')
-            ->leftJoin('registration6s', 'users.id', '=', 'registration6s.id_user')
             ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
-            ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration5s.*', 'registration6s.*', 'registration7s.*')
+            ->leftJoin('registration8s', 'users.id', '=', 'registration8s.id_user')
+            ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.foto_diri')
             ->where('registration1s.nama_lengkap','=', $id)
             ->first();
 
@@ -218,39 +213,178 @@ class Registration1Controller extends Controller
         //
     }
 
-    public function detailUser($id) {
-        // $daf = Registration1::orderby('id')->get();
-        // return view('admin.detail', compact('daf'));
+    // dari inputan ke fuzzy
+    function calculate() {
+        // variabel
+        $total_umur = $randUmur;
+        $total_tinggi_badan = $randTb;
+        $total_berat_badan = $randBb;
+        $total_penghasilan = $randPenghasilan;
 
-        // $daf = Registration1::where('id', $id)->first();
-        // return view('admin.detail', compact('daf'));
+        // proses fuzzifikasi
+        $gUmur = $grupUmur($total_umur);
+        $gTb = $grupTinggiBadan($total_tinggi_badan);
+        $gBb = $grupBeratBadan($total_berat_badan);
+        $gPenghasilan = $grupPenghasilan($total_penghasilan);
+        
+        //proses inferensi sampe defuzzifikasi dengan memanggil function "inference"
+        $inferensi = inference($gUmur, $gTb, $gBb, $gPenghasilan);
+
+        //kategorisasi hasil defuzzifikasi
+        // $inferensi = Math.round($inferensi*100)/100;
     }
 
-    public function kurvaTurun($a, $b, $x) {
-        if (a<=x & x<=b) {
-            return (b-x)/(b-a);
-        } elseif (x>=b) {
-            return 0;
+    // function aplikasi fungsi implikasi
+    public function grupUmur($total_umur) {
+        // $a, $b, $c;
+
+        //himpunan turun
+        if (18<=$total_umur && $total_umur<=25) {
+            // return ($b-$x)/($b-$a);
+            $a = (25-$total_umur)/(25-18);
+        } elseif ($total_umur>=25) {
+            // return 0;
+            $a = 0;
+        }
+
+        //himpunan segitiga
+        if ($total_umur<=23 || $total_umur>=33) {
+            // return 0;
+            $b = 0;
+        } elseif (23<=$total_umur && $total_umur<=28) {
+            // return ($x-$a)/($b-$a);
+            $b = ($total_umur-23)/(28-23);
+        } elseif (28<=$total_umur && $total_umur<=33) {
+            // return ($b-$x)/($c-$b);
+            $b = (28-$total_umur)/(33-28);
+        }
+
+        //himpunan naik
+        if ($total_umur<=31) {
+            // return 0;
+            $c = 0;
+        } elseif (31<=$total_umur && $total_umur<=35) {
+            // return ($x-$a)/($b-$a);
+            $c = ($total_umur-31)/(35-31);
+        } elseif ($total_umur>=35) {
+            // return 1;
+            $c = 1;
         }
     }
 
-    public function kurvaSegitiga($a, $b, $c, $x) {
-        if (x<=a || x>=c) {
-            return 0;
-        } elseif (a<=x & x<=b) {
-            return (x-a)/(b-a);
-        } elseif (b<=x & x<=c) {
-            return (b-x)/(c-b);
+    public function grupTinggiBadan($total_tinggi_badan) {
+        // $a, $b, $c;
+
+        //himpunan turun
+        if (50<=$total_tinggi_badan && $total_tinggi_badan<=165) {
+            // return ($b-$x)/($b-$a);
+            $a = (165-$total_tinggi_badan)/(165-50);
+        } elseif ($total_tinggi_badan>=165) {
+            // return 0;
+            $a = 0;
+        }
+
+        //himpunan segitiga
+        if ($total_tinggi_badan<=160 || $total_tinggi_badan>=175) {
+            // return 0;
+            $b = 0;
+        } elseif (160<=$total_tinggi_badan && $total_tinggi_badan<=168) {
+            // return ($x-$a)/($b-$a);
+            $b = ($total_tinggi_badan-160)/(168-160);
+        } elseif (168<=$total_tinggi_badan && $total_tinggi_badan<=175) {
+            // return ($b-$x)/($c-$b);
+            $b = (168-$total_tinggi_badan)/(175-168);
+        }
+
+        //himpunan naik
+        if ($total_tinggi_badan<=170) {
+            // return 0;
+            $c = 0;
+        } elseif (170<=$total_tinggi_badan && $total_tinggi_badan<=200) {
+            // return ($x-$a)/($b-$a);
+            $c = ($total_tinggi_badan-170)/(200-170);
+        } elseif ($total_tinggi_badan>=200) {
+            // return 1;
+            $c = 1;
         }
     }
 
-    public function kurvaNaik($a, $b, $x) {
-        if (x<=a) {
-            return 0;
-        } elseif (a<=x & x<=b) {
-            return (x-a)/(b-a);
-        } elseif (x>=b) {
-            return 1;
+    public function grupBeratBadan($total_berat_badan) {
+        // $a, $b, $c;
+
+        //himpunan turun
+        if (40<=$total_berat_badan && $total_berat_badan<=55) {
+            // return ($b-$x)/($b-$a);
+            $a = (55-$total_berat_badan)/(55-40);
+        } elseif ($total_berat_badan>=55) {
+            // return 0;
+            $a = 0;
+        }
+
+        //himpunan segitiga
+        if ($total_berat_badan<=50 || $total_berat_badan>=75) {
+            // return 0;
+            $b = 0;
+        } elseif (50<=$total_berat_badan && $total_berat_badan<=63) {
+            // return ($x-$a)/($b-$a);
+            $b = ($total_berat_badan-50)/(63-50);
+        } elseif (63<=$total_berat_badan && $total_berat_badan<=75) {
+            // return ($b-$x)/($c-$b);
+            $b = (63-$total_berat_badan)/(75-63);
+        }
+
+        //himpunan naik
+        if ($total_berat_badan<=70) {
+            // return 0;
+            $c = 0;
+        } elseif (70<=$total_berat_badan && $total_berat_badan<=100) {
+            // return ($x-$a)/($b-$a);
+            $c = ($total_berat_badan-70)/(100-70);
+        } elseif ($total_berat_badan>=100) {
+            // return 1;
+            $c = 1;
         }
     }
+
+    public function grupPenghasilan($total_penghasilan) {
+        // $a, $b, $c;
+
+        //himpunan turun
+        if (500000<=$total_penghasilan && $total_penghasilan<=4000000) {
+            // return ($b-$x)/($b-$a);
+            $a = (4000000-$total_penghasilan)/(4000000-500000);
+        } elseif ($total_penghasilan>=4000000) {
+            // return 0;
+            $a = 0;
+        }
+
+        //himpunan segitiga
+        if ($total_penghasilan<=3500000 || $total_penghasilan>=8000000) {
+            // return 0;
+            $b = 0;
+        } elseif (3500000<=$total_penghasilan && $total_penghasilan<=5000000) {
+            // return ($x-$a)/($b-$a);
+            $b = ($total_penghasilan-3500000)/(5000000-3500000);
+        } elseif (5000000<=$total_penghasilan && $total_penghasilan<=8000000) {
+            // return ($b-$x)/($c-$b);
+            $b = (5000000-$total_penghasilan)/(8000000-5000000);
+        }
+
+        //himpunan naik
+        if ($total_penghasilan<=6000000) {
+            // return 0;
+            $c = 0;
+        } elseif (6000000<=$total_penghasilan && $total_penghasilan<=12000000) {
+            // return ($x-$a)/($b-$a);
+            $c = ($total_penghasilan-6000000)/(12000000-6000000);
+        } elseif ($total_penghasilan>=12000000) {
+            // return 1;
+            $c = 1;
+        }
+    }
+
+    public function inference() {
+        //
+    }
+
 }

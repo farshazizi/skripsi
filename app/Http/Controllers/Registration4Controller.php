@@ -88,10 +88,13 @@ class Registration4Controller extends Controller
             // 'organisasi'            => 'required',
             // 'pengalaman_kerja'      => 'required',
             'keahlian_khusus'       => 'required',
-            'moto'              => 'required',
-            'hobi'              => 'required',
+            // 'moto'              => 'required',
+            // 'hobi'              => 'required',
             'jamaah_diikuti'    => 'required',
             'ibadah_sunnah'     => 'required',
+            'deskripsi_diri'            => 'required',
+            'visi_pernikahan'           => 'required',
+            'kehidupan_rumah_tangga'    => 'required',
         ));
 
         // // store in the database
@@ -108,8 +111,8 @@ class Registration4Controller extends Controller
         // $reg4->organisasi           = $request->organisasi;
         // $reg4->pengalaman_kerja     = $request->pengalaman_kerja;
         $reg4->keahlian_khusus      = $request->keahlian_khusus;
-        $reg5->moto                 = $request->moto;
-        $reg5->hobi                 = $request->hobi;
+        // $reg5->moto                 = $request->moto;
+        // $reg5->hobi                 = $request->hobi;
         $reg5->jamaah_diikuti       = $request->jamaah_diikuti;
         $reg5->ibadah_sunnah        = $request->ibadah_sunnah;
         $reg6->deskripsi_diri           = $request->deskripsi_diri;
@@ -122,7 +125,7 @@ class Registration4Controller extends Controller
 
         $reg1 = Registration1::find($b[0]->id);
         // $reg1 = Registration1::find($request->id_user);
-        $reg1->posisi = 5;    
+        $reg1->posisi = 7;    
         $reg1->save();
 
         $reg4->save();

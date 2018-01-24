@@ -14,11 +14,11 @@
                     {{ Form::submit('Next', array('class' => 'btn btn-primary btn-md btn-block')) }}
                 {!! Form::close() !!} --}}
                 <form>
-                    <button class="btn btn-primary btn-md btn-block">
-                        <a style="color: white" href="{{ route('registration.store') }}">
+                    {{-- <button class="btn btn-primary btn-md btn-block"> --}}
+                        <a class="btn btn-primary btn-md btn-block" style="color: white" href="{{ route('registration.store') }}" role="button">
                             Next
                         </a>
-                    </button>
+                    {{-- </button> --}}
                 </form>
             </div>
         </div>
