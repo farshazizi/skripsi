@@ -26,7 +26,6 @@ class CreateRegistration7sTable extends Migration
             $table->string('suku_calon_pasangan');
             $table->string('bb_calon_pasangan');
             $table->integer('randBb');
-            // $table->string('suku_domisili_pasangan');
             $table->string('karakter_pasangan');
             $table->timestamps();
         });

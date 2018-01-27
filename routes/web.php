@@ -50,6 +50,7 @@ Route::get('/admin/dashboard', function () {
 Route::resource('/admin/user', 'DaftarController');
 Route::get('/admin/match', 'Registration1Controller@index');
 Route::resource('/admin/match', 'Registration1Controller');
+Route::get('/admin/match/{{ nama_lengkap }}', 'Registration1Controller@calculate');
 // Route::resource('/admin/match', 'Registration2Controller');
 // Route::resource('/admin_perhitungan', 'Registration1Controller');
 // Route::get('/admin_detail', 'Registration1Controller@show');
@@ -70,6 +71,7 @@ Route::group(['middleware' => 'auth'], function() {
 	// Route::resource('/registration1', 'Registration1Controller');
 	Route::get('/registration', 'Registration1Controller@create');
 	Route::post('/registration', 'Registration1Controller@store')->name('registration.store');
+	// Route::post('/registration', 'Registration1Controller@calculate')->name('registration.calculate');
 
 	//Route::resource('/registration2', 'Registration2Controller');
 	Route::get('/registration/2', ['as' => 'registration2', 'uses' => 'Registration2Controller@create']);
@@ -84,12 +86,12 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('/registration/4', 'Registration4Controller@store')->name('registration4.store');
 
 	// Route::resource('/registration5', 'Registration5Controller');
-	Route::get('/registration/5', ['as' => 'registration5', 'uses' => 'Registration5Controller@create']);
-	Route::post('/registration/5', 'Registration5Controller@store')->name('registration5.store');
+	// Route::get('/registration/5', ['as' => 'registration5', 'uses' => 'Registration5Controller@create']);
+	// Route::post('/registration/5', 'Registration5Controller@store')->name('registration5.store');
 
 	// Route::resource('/registration6', 'Registration6Controller');
-	Route::get('/registration/6', ['as' => 'registration6', 'uses' => 'Registration6Controller@create']);
-	Route::post('/registration/6', 'Registration6Controller@store')->name('registration6.store');
+	// Route::get('/registration/6', ['as' => 'registration6', 'uses' => 'Registration6Controller@create']);
+	// Route::post('/registration/6', 'Registration6Controller@store')->name('registration6.store');
 
 	// Route::resource('/registration7', 'Registration7Controller');
 	Route::get('/registration/7', ['as' => 'registration7', 'uses' => 'Registration7Controller@create']);

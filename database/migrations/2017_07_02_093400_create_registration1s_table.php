@@ -24,7 +24,7 @@ class CreateRegistration1sTable extends Migration
             $table->string('handphone');
             $table->string('alamat_tempat_tinggal');
             $table->string('pekerjaan');
-            $table->string('suku');
+            // $table->string('suku');
             $table->string('status_pernikahan');
             $table->string('penghasilan');
             $table->string('izin_menikah');

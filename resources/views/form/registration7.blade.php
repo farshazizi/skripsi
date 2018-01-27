@@ -10,8 +10,8 @@
 
 				{{ Form::hidden('id_user') }}
 
-				{{ Form::label('umur_pasangan', 'Kategori umur pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('umur_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda', 'Parobaya' => 'Parobaya', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::label('umur_calon_pasangan', 'Kategori umur pasangan Anda', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('umur_calon_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda', 'Dewasa' => 'Dewasa', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randUmur') }}
 
@@ -19,18 +19,16 @@
 				{{ Form::select('tb_calon_pasangan', ['' => 'Pilihan', 'Pendek' => 'Pendek', 'Sedang' => 'Sedang', 'Tinggi' => 'Tinggi'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randTb') }}
+				{{-- {{ Form::label('randUmur', 'randUmur randUmur', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::text('randUmur', null, array('class' => 'form-control', 'placeholder' => 'Nama lengkap')) }} --}}
 
 				{{ Form::label('merokok_calon_pasangan', 'Apakah Anda menerima calon pasangan yang merokok', array('style' => 'margin-top: 20px')) }}
 				{{ Form::select('merokok_calon_pasangan', ['' => 'Pilihan', 'Iya, tidak masalah' => 'Iya, tidak masalah', 'Iya, asalkan berniat untuk berhenti' => 'Iya, asalkan berniat untuk berhenti', 'Tidak, saya tidak suka perokok' => 'Tidak, saya tidak suka perokok'], null, array('class' => 'form-control', 'required' => '')) }}
 
-				{{ Form::label('penghasilan_calon_pasangan', 'Kategori penghasilan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('penghasilan_calon_pasangan', ['' => 'Pilihan', 'Miskin' => '< Rp3.500.000', 'Berkecukupan' => 'Rp3.500.001 - Rp4.000.000', 'Sedang' => 'Rp4.000.001 - Rp6.000.000', 'x' => 'Rp6.000.001 - Rp8.000.000', 'Kaya' => '> Rp8.000.001'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::label('penghasilan_calon_pasangan', 'Rata-rata penghasilan calon pasangan Anda (perbulan)', array('style' => 'margin-top: 20px')) }}
+				{{ Form::select('penghasilan_calon_pasangan', ['' => 'Pilihan', 'Miskin' => '< Rp4.000.000', 'Sedang' => 'Rp4.000.000 - Rp6.000.000', 'Kaya' => '> Rp6.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randPenghasilan') }}
-
-				{{-- {{ Form::label('penghasilan_calon_pasangan', 'Rataan penghasilan calon pasangan per bulan', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::number('penghasilan_calon_pasangan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'ex: 4500000')) }} --}}
-			    {{-- {{ Form::number_format(number)('', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'ex: 4500000')) }} --}}
 
 				{{ Form::label('suku_calon_pasangan', 'Apakah suku calon pasangan Anda penting untuk Anda?', array('style' => 'margin-top: 20px')) }}
 			    <br>
@@ -46,12 +44,19 @@
 
 				{{ Form::hidden('randBb') }}
 
-				{{-- {{ Form::label('suku_domisili_pasangan', 'Apakah suku domisili pasangan Anda penting untuk Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::text('suku_domisili_pasangan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Apakah suku domisili pasangan Anda penting untuk Anda')) }} --}}
-
 			    {{ Form::label('karakter_pasangan', 'Ceritakan karakter pasangan seperti apa yang Anda inginkan', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{ Form::textarea('karakter_pasangan', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 20%', 'placeholder' => 'Ceritakan karakter pasangan seperti apa yang Anda inginkan')) }}
+
+			    {{-- <?php
+			    	if (?>$jenis_kelamin == "Laki-laki"<?php) {?>
+			    		{{ Form::label('status_pasangan', 'Status pasangan Anda', array('style' => 'margin-top: 20px')) }}
+						{{ Form::select('status_pasangan', ['' => 'Pilihan', 'Belum menikah' => 'Belum menikah', 'Janda belum punya anak' => 'Janda belum punya anak', 'Janda sudah punya anak' => 'Janda sudah punya anak'], null, array('class' => 'form-control', 'required' => '')) }}
+			    	<?php} elseif (?>$jenis_kelamin == "Perempuan"<?php) {?>
+			    		{{ Form::label('status_pasangan', 'Status pasangan Anda', array('style' => 'margin-top: 20px')) }}
+						{{ Form::select('status_pasangan', ['' => 'Pilihan', 'Belum menikah' => 'Belum menikah', 'Duda belum punya anak' => 'Duda belum punya anak', 'Duda sudah punya anak' => 'Duda sudah punya anak'], null, array('class' => 'form-control', 'required' => '')) }}
+			    	<?php}
+			    ?> --}}
 
 			    {{-- {{ Form::label('#', '* Beri tanda "-" jika tidak ada', array('style' => 'margin-top: 20px; color: red')) }} --}}
 			    <p style="font-size: 12px; color: red; margin-top: 5px">* Beri tanda "-" jika tidak ada</p>

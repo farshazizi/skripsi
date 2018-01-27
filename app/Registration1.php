@@ -11,7 +11,7 @@ class Registration1 extends Model
 	public $primaryKey = 'id';	
 
     public $fillable = [
-        'id_akun',
+        'id_user',
         'posisi',
     	'nama_lengkap',
     	'tanggal_lahir',

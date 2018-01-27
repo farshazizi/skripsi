@@ -10,11 +10,17 @@
 			    Detail {{ $daf->nama_lengkap }}
 				{{-- <a href="/admin/match">Match</a> / {{ $daf->nama_lengkap}} --}}
 			</div>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href="/admin/match">Match</a>
+				</li>
+				<li class="breadcrumb-item active">Detail {{ $daf->nama_lengkap }}</li>
+			</ol>
 			<div class="card-body">
 			    <div class="table-responsive">
 			    	<div class="row">
 			    		<div class="col text-center">			    		
-							<img src="{{ asset('/images/partners/fitrah2.jpg') }}" alt="Responsive image" class="rounded-circle" style="width: 70%; height: auto">
+							<img src="/images/foto_diri/{{ $daf->foto_diri }}" class="rounded-circle" style="width: 70%; height: auto">
 			    		</div>
 			    		<div class="col-8">
 			    			<table>
@@ -23,7 +29,7 @@
 			                            <td><b>Id user</b></td>
 			                            <td></td>
 			                            <td>:</td>
-			                            <td>{{ $daf->id }}</td>
+			                            <td>{{ $daf->id_user }}</td>
 			                            <td></td>
 			                        </tr>
 			                        <tr>

@@ -53,12 +53,6 @@ class Registration3Controller extends Controller
         } elseif ($posisi == 4) {
             // return redirect('registration/4');
             return redirect()->route('registration4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration/5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration/6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
             // return redirect('registration/7');
             return redirect()->route('registration7');
@@ -78,7 +72,6 @@ class Registration3Controller extends Controller
     {
         // validate the data
         $this->validate($request, array(
-            // 'id_user'       => 'required',
             'nama_ayah'     => 'required',
             'suku_ayah'     => 'required',
             'nama_ibu'      => 'required',

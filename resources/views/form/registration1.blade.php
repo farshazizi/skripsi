@@ -10,7 +10,7 @@
 			@endforeach
 			{!! Form::open(['route' => 'registration.store']) !!}
 
-				{{ Form::hidden('id_akun') }}
+				{{ Form::hidden('id_user') }}
 
 				{{ Form::hidden('posisi') }}
 
@@ -47,14 +47,14 @@
 			    {{ Form::label('pekerjaan', 'Pekerjaan', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::text('pekerjaan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Pekerjaan')) }}
 
-			    {{ Form::label('suku', 'Suku', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::text('suku', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Suku')) }}
+			    {{-- {{ Form::label('suku', 'Suku', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::text('suku', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Suku')) }} --}}
 
 			    {{ Form::label('status_pernikahan', 'Status Pernikahan', array('style' => 'margin-top: 20px')) }}
 				{{ Form::select('status_pernikahan', ['' => 'Status Pernikahan', 'Sudah pernah menikah, tidak memiliki anak' => 'Sudah pernah menikah, tidak memiliki anak', 'Sudah pernah menikah dan memiliki anak' => 'Sudah pernah menikah dan memiliki anak', 'Belum pernah menikah' => 'Belum pernah menikah'], null, array('class' => 'form-control', 'required' => '')) }}
 
-			    {{ Form::label('penghasilan', 'Berapa Penghasilan Anda Perbulan Saat Ini', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::select('penghasilan', ['' => 'Penghasilan Perbulan', '500000 - 3500000' => 'Rp500.000 - Rp3.500.000', '3500000 - 4000000' => 'Rp3.500.000 - Rp4.000.000', '4000000 - 6000000' => 'Rp4.000.000 - Rp6.000.000', '6000000 - 8000000' => 'Rp6.000.000 - Rp8.000.000', '8000000 - 12000000' => 'Rp8.000.000 - Rp12.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
+			    {{ Form::label('penghasilan', 'Berapa Penghasilan Anda Perbulan Saat Ini (perbulan)', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::select('penghasilan', ['' => 'Penghasilan Perbulan', '<4000000' => '< Rp4.000.000', '4000000-6000000' => 'Rp4.000.000 - Rp6.000.000', '>6000000' => '> Rp6.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
 
 			    {{ Form::label('izin_menikah', 'Izin Menikah/Restu Menikah', array('style' => 'margin-top: 20px')) }}
 			    <br>

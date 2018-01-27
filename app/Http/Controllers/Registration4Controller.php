@@ -53,12 +53,6 @@ class Registration4Controller extends Controller
             // $data['id_user'] = $request['id_user'];
             return view('form/registration4');
             // return redirect('registration/4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
             // return redirect('registration7');
             return redirect()->route('registration7');
@@ -76,9 +70,9 @@ class Registration4Controller extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // validate the data
         $this->validate($request, array(
-            'id_user'           => 'required',
             // 'sd'                => 'required',
             // 'smp'               => 'required',
             // 'sma'               => 'required',
@@ -113,11 +107,11 @@ class Registration4Controller extends Controller
         $reg4->keahlian_khusus      = $request->keahlian_khusus;
         // $reg5->moto                 = $request->moto;
         // $reg5->hobi                 = $request->hobi;
-        $reg5->jamaah_diikuti       = $request->jamaah_diikuti;
-        $reg5->ibadah_sunnah        = $request->ibadah_sunnah;
-        $reg6->deskripsi_diri           = $request->deskripsi_diri;
-        $reg6->visi_pernikahan          = $request->visi_pernikahan;
-        $reg6->kehidupan_rumah_tangga   = $request->kehidupan_rumah_tangga;
+        $reg4->jamaah_diikuti       = $request->jamaah_diikuti;
+        $reg4->ibadah_sunnah        = $request->ibadah_sunnah;
+        $reg4->deskripsi_diri           = $request->deskripsi_diri;
+        $reg4->visi_pernikahan          = $request->visi_pernikahan;
+        $reg4->kehidupan_rumah_tangga   = $request->kehidupan_rumah_tangga;
 
         $b = DB::table('registration1s')
         ->select('id')
@@ -129,7 +123,6 @@ class Registration4Controller extends Controller
         $reg1->save();
 
         $reg4->save();
-
         // $data['id_user'] = $reg4->id_user;
 
         // Session::flash = temporary, exists for one page request
@@ -138,7 +131,7 @@ class Registration4Controller extends Controller
 
         // redirect to another page
         // return redirect()->route('registration4.create', $reg4->id);
-        return redirect()->route('registration5');
+        return redirect()->route('registration7');
     }
 
     /**

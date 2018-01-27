@@ -52,12 +52,6 @@ class Registration8Controller extends Controller
         } elseif ($posisi == 4) {
             // return redirect('registration4');
             return redirect()->route('registration4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
             // return redirect('registration7');
             return redirect()->route('registration7');
@@ -76,21 +70,38 @@ class Registration8Controller extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // validate the data
         $this->validate($request, array(
-            'id_user'       => 'required',
             'ktp'           => 'required',
             'foto_diri'     => 'required',
-            'akte_cerai'    => '',
+            // 'akte_cerai'    => 'mimes:jpeg,png',
         ));
 
         // // store in the database
         $reg8 = new Registration8;
 
         $reg8->id_user      = Auth::user()->id;
-        $reg8->ktp          = $request->ktp;
-        $reg8->foto_diri    = $request->foto_diri;
-        $reg8->akte_cerai   = $request->akte_cerai;
+        // $reg8->ktp          = $request->ktp;
+        $photo = $request->file('ktp');
+        $destination = base_path().'/public/images/ktp';
+        $filename = $photo->getClientOriginalName();
+        $photo->move($destination,$filename);
+        $reg8['ktp'] = $filename;
+
+        // $reg8->foto_diri    = $request->foto_diri;
+        $photo2 = $request->file('foto_diri');
+        $destination2 = base_path().'/public/images/foto_diri';
+        $filename2 = $photo2->getClientOriginalName();
+        $photo2->move($destination2,$filename2);
+        $reg8['foto_diri'] = $filename2;
+
+        // $reg8->akte_cerai   = $request->akte_cerai;
+        $photo3 = $request->file('akte_cerai');
+        $destination3 = base_path().'/public/images/akte_cerai';
+        $filename3 = $photo3->getClientOriginalName();
+        $photo3->move($destination3,$filename3);
+        $reg8['akte_cerai'] = $filename3;
 
         $b = DB::table('registration1s')
         ->select('id')
@@ -102,6 +113,8 @@ class Registration8Controller extends Controller
 
         $reg8->save();
 
+        // dd($request->all());
+
         // $data['id_user'] = $reg8->id_user;
 
         // Session::flash = temporary, exists for one page request
@@ -111,7 +124,7 @@ class Registration8Controller extends Controller
         // redirect to another page
         // return redirect()->route('registration4.create', $reg4->id);
         // return redirect()->route('registration8.create', $data);
-        return redirect('wait');
+        return view('form/waiting');
     }
 
     /**

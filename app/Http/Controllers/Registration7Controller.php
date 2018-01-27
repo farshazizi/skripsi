@@ -7,6 +7,7 @@ use App\registration1;
 use App\registration7;
 use Auth;
 use DB;
+use Random;
 
 class Registration7Controller extends Controller
 {
@@ -52,16 +53,9 @@ class Registration7Controller extends Controller
         } elseif ($posisi == 4) {
             // return redirect('registration4');
             return redirect()->route('registration4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
-            // $data['id_user'] = $request['id_user'];
-            return view('form/registration7');
             // return redirect('registration/7');
+            return view('form/registration7');
         } elseif ($posisi == 8) {
             // return redirect('registration8');
             return redirect()->route('registration8');
@@ -76,18 +70,14 @@ class Registration7Controller extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         // validate the data
         $this->validate($request, array(
-            'id_user'                       => 'required',
             'umur_calon_pasangan'           => 'required',
-            // 'randUmur'                      => 'required',
             'tb_calon_pasangan'             => 'required',
             'merokok_calon_pasangan'        => 'required',
             'penghasilan_calon_pasangan'    => 'required',
             'suku_calon_pasangan'           => 'required',
             'bb_calon_pasangan'             => 'required',
-            // 'suku_domisili_pasangan'        => 'required',
             'karakter_pasangan'             => 'required',
         ));
 
@@ -97,44 +87,51 @@ class Registration7Controller extends Controller
 
         $reg7->id_user                      = Auth::user()->id;
         $reg7->umur_calon_pasangan          = $request->umur_calon_pasangan;
-        $reg7->randUmur                     = $request->randUmur;
-        if ($reg7->umur_calon_pasangan == 'Muda') {
-            $reg7->randUmur = rand(18, 25);
-        } elseif ($reg7->umur_calon_pasangan == 'Parobaya') {
-            $reg7->randUmur = rand(23, 33);
-        } elseif ($reg7->umur_calon_pasangan == 'Tua') {
-            $reg7->randUmur = rand(31, 35);
+        if ($reg7->umur_calon_pasangan == "Muda") {
+            $int = Random::generateInt(18, 25);
+            $reg7->randUmur = $int;
+        } elseif ($reg7->umur_calon_pasangan == "Dewasa") {
+            $int = Random::generateInt(23, 33);
+            $reg7->randUmur = $int;
+        } elseif ($reg7->umur_calon_pasangan == "Tua") {
+            $int = Random::generateInt(31, 35);
+            $reg7->randUmur = $int;
         }
         $reg7->tb_calon_pasangan            = $request->tb_calon_pasangan;
-        $reg7->randTb                       = $request->randTb;
-        if ($reg7->tb_calon_pasangan == 'Pendek') {
-            $reg7->randTb = rand(50, 165);
-        } elseif ($reg7->tb_calon_pasangan == 'Sedang') {
-            $reg7->randTb = rand(160, 175);
-        } elseif ($reg7->tb_calon_pasangan == 'Tinggi') {
-            $reg7->randTb = rand(170, 200);
+        if ($reg7->tb_calon_pasangan == "Pendek") {
+            $int = Random::generateInt(50, 165);
+            $reg7->randTb = $int;
+        } elseif ($reg7->tb_calon_pasangan == "Sedang") {
+            $int = Random::generateInt(160, 175);
+            $reg7->randTb = $int;
+        } elseif ($reg7->tb_calon_pasangan == "Tinggi") {
+            $int = Random::generateInt(170, 200);
+            $reg7->randTb = $int;
         }
         $reg7->merokok_calon_pasangan       = $request->merokok_calon_pasangan;
         $reg7->penghasilan_calon_pasangan   = $request->penghasilan_calon_pasangan;
-        $reg7->randPenghasilan              = $request->randPenghasilan;
-        // if ($reg7->penghasilan_calon_pasangan == 'Muda') {
-        //     $reg7->randPenghasilan = rand(18, 25);
-        // } elseif ($reg7->penghasilan_calon_pasangan == 'Parobaya') {
-        //     $reg7->randPenghasilan = rand(23, 33);
-        // } elseif ($reg7->penghasilan_calon_pasangan == 'Tua') {
-        //     $reg7->randPenghasilan = rand(31, 35);
-        // }
+        if ($reg7->penghasilan_calon_pasangan == "Miskin") {
+            $int = Random::generateInt(500000, 4000000);
+            $reg7->randPenghasilan = $int;
+        } elseif ($reg7->penghasilan_calon_pasangan == "Sedang") {
+            $int = Random::generateInt(3500000, 8000000);
+            $reg7->randPenghasilan = $int;
+        } elseif ($reg7->penghasilan_calon_pasangan == "Kaya") {
+            $int = Random::generateInt(6000000, 12000000);
+            $reg7->randPenghasilan = $int;
+        }
         $reg7->suku_calon_pasangan          = $request->suku_calon_pasangan;
         $reg7->bb_calon_pasangan            = $request->bb_calon_pasangan;
-        $reg7->randBb                       = $request->randBb;
-        if ($reg7->bb_calon_pasangan == 'Kurus') {
-            $reg7->randBb = rand(40, 55);
-        } elseif ($reg7->bb_calon_pasangan == 'Berisi') {
-            $reg7->randBb = rand(50, 75);
-        } elseif ($reg7->bb_calon_pasangan == 'Gemuk') {
-            $reg7->randBb = rand(70, 100);
+        if ($reg7->bb_calon_pasangan == "Kurus") {
+            $int = Random::generateInt(40, 55);
+            $reg7->randBb = $int;
+        } elseif ($reg7->bb_calon_pasangan == "Berisi") {
+            $int = Random::generateInt(50, 75);
+            $reg7->randBb = $int;
+        } elseif ($reg7->bb_calon_pasangan == "Gemuk") {
+            $int = Random::generateInt(70, 100);
+            $reg7->randBb = $int;
         }
-        // $reg7->suku_domisili_pasangan       = $request->suku_domisili_pasangan;
         $reg7->karakter_pasangan            = $request->karakter_pasangan;
 
         $b = DB::table('registration1s')
@@ -148,6 +145,7 @@ class Registration7Controller extends Controller
 
         $reg7->save();
 
+        // dd($request->all());
         // $data['id_user'] = $reg7->id_user;
 
         // Session::flash = temporary, exists for one page request

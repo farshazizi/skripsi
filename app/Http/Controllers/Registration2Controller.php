@@ -53,12 +53,6 @@ class Registration2Controller extends Controller
         } elseif ($posisi == 4) {
             // return redirect('registration/4');
             return redirect()->route('registration4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration/5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration/6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
             // return redirect('registration/7');
             return redirect()->route('registration7');
@@ -81,7 +75,6 @@ class Registration2Controller extends Controller
         // dd();
         // validate the data
         $this->validate($request, array(
-            // 'id_user'           => 'required',
             'tinggi_badan'      => 'required|max:3',
             'berat_badan'       => 'required|max:3',
             'gol_darah'         => 'required',

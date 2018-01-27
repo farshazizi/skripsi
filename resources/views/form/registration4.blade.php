@@ -9,49 +9,11 @@
 			{!! Form::open(['route' => 'registration4.store']) !!}
 			
 				{{ Form::hidden('id_user') }}
-
-				{{-- {{ Form::label('sd', 'Dimana Sekolah Dasar (SD) Anda?', array('style' => 'margin-top: 20px')) }}
-				{{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-	    		{{ Form::text('sd', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'contoh: SDN 1 Surabaya')) }}
-			    
-			    {{ Form::label('smp', 'Dimana Sekolah Menengah Pertama (SMP) Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::text('smp', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'contoh: SMPN 1 Surabaya')) }}
-
-			    {{ Form::label('sma', 'Dimana Sekolah Menengah Atas (SMA) Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::text('sma', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'contoh: SMAN 1 Surabaya')) }} --}}
-
-			    {{-- {{ Form::label('perguruan_tinggi', 'Dimana Perguruan Tinggi Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::text('perguruan_tinggi', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Dimana Perguruan Tinggi Anda')) }} --}}
 			    
 			    {{ Form::label('pendidikan_terakhir', 'Pendidikan terakhir Anda', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{-- {{ Form::text('pendidikan_terakhir', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'contoh: Pendidikan terakhir Anda')) }} --}}
 			    {{ Form::select('pendidikan_terakhir', ['' => 'Pilihan', 'TK' => 'Taman Kanak-kanak (TK)', 'SD' => 'Sekolah Dasar (SD)', 'SMP' => 'Sekolah Menengah Pertama (SMP)/sederajat', 'SMA' => 'Sekolah Menengah Atas (SMA)/sederajat', 'Diploma' => 'Diploma I/II/III/sederajat', 'S1' => 'Strata 1 (S1)', 'S2' => 'Strata 2 (S2)', 'S3' => 'Strata 3 (S3)'], null, array('class' => 'form-control', 'required' => '')) }}
-
-
-			    {{-- {{ Form::label('prestasi', 'Prestasi apa yang pernah Anda raih?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::textarea('prestasi', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 10%; resize: none', 'placeholder' => 'contoh:
-1. Juara 1 mengaji tingkat Nasional 2017
-2. Juara 1 mengaji tingkat Nasional 2017
-3. dll')) }}
-
-			    {{ Form::label('organisasi', 'Organisasi apa yang pernah Anda ikuti?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::textarea('organisasi', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 20%; resize: none', 'placeholder' => 'contoh:
-1. Ketua Himpunan Mahasiswa 2017
-2. Ketua BEM Fakultas 2017
-3. dll')) }}
-
-			    {{ Form::label('pengalaman_kerja', 'Sebutkan pengalaman kerja Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::textarea('pengalaman_kerja', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 20%; resize: none', 'placeholder' => 'contoh:
-1. IT Consultant
-2. Project Manager
-3. dll')) }} --}}
 
 			    {{ Form::label('keahlian_khusus', 'Apa keahlian khusus yang Anda miliki?', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
@@ -59,17 +21,6 @@
 1. Memasak
 2. Menyanyi
 3. dll')) }}
-
-				{{-- {{ Form::label('moto', 'Apa moto hidup Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::text('moto', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Tuliskan moto hidup Anda')) }}
-
-			    {{ Form::label('hobi', 'Apa hobi Anda?', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::textarea('hobi', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 112px; resize: none', 'placeholder' => 'contoh:
-1. Membaca
-2. Menulis
-3. dll')) }} --}}
 
 				{{ Form::label('jamaah_diikuti', 'Apa jamaah yang Anda ikuti?', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}

@@ -18,7 +18,7 @@
 	            <th>Nama Lengkap</th>
 	            <th>Usia</th>
 	            <th>Jenis Kelamin</th>
-	            <th>Suku</th>
+	            {{-- <th>Suku</th> --}}
 	            <th>Status Pernikahan</th>
 	            <th>Domisili</th>
 	            <th>Status</th>
@@ -47,7 +47,7 @@
 							{{-- {{ $daf->tanggal_lahir }} --}}
 						</td>
 						<td>{{ $daf->jenis_kelamin }}</td>
-						<td>{{ $daf->suku }}</td>
+						{{-- <td>{{ $daf->suku }}</td> --}}
 						<td>{{ $daf->status_pernikahan }}</td>
 						<td>{{ $daf->alamat_tinggal_saat_ini }}</td>
 						<td style="text-align: center;">

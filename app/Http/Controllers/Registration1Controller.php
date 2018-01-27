@@ -70,6 +70,9 @@ class Registration1Controller extends Controller
         } elseif ($posisi == 8) {
             // return redirect('registration/8');
             return redirect()->route('registration8');
+        } elseif ($posisi == 9) {
+            // return redirect('registration/8');
+            return view('form/waiting');
         }
     }
 
@@ -91,7 +94,7 @@ class Registration1Controller extends Controller
             'handphone'                 => 'required',
             'alamat_tempat_tinggal'     => 'required',
             'pekerjaan'                 => 'required',
-            'suku'                      => 'required',
+            // 'suku'                      => 'required',
             'status_pernikahan'         => 'required',
             'penghasilan'               => 'required',
             'izin_menikah'              => 'required',
@@ -110,7 +113,7 @@ class Registration1Controller extends Controller
         $reg1->handphone                   = $request->handphone;
         $reg1->alamat_tempat_tinggal       = $request->alamat_tempat_tinggal;
         $reg1->pekerjaan                   = $request->pekerjaan;
-        $reg1->suku                        = $request->suku;
+        // $reg1->suku                        = $request->suku;
         $reg1->status_pernikahan           = $request->status_pernikahan;
         $reg1->penghasilan                 = $request->penghasilan;
         $reg1->izin_menikah                = $request->izin_menikah;
@@ -139,13 +142,8 @@ class Registration1Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        // @foreach ($suku as $suku) {
-        //     if ($suku->first()) {
-        //         return 
-        //     }
-        // }
         // $reg1 = Registration1::find($id);
         // return view('form/registration1')->with('reg1', $reg1);
         // $daf = Registration1::where('id_user', '$id')->first(); 
@@ -164,11 +162,20 @@ class Registration1Controller extends Controller
             ->where('registration1s.nama_lengkap','=', $id)
             ->first();
 
-        // $users = DB::table('registration1s')
-        //         ->select(DB::raw('count(*) as user_count, id_user'))
-        //         ->where('id_user', '=', 'id')
-        //         ->groupBy('id_user')
-        //         ->get();
+        if ($request->hasFile('foto_diri')) {
+            $img = Registration8::find($id);
+            $path = base_path().'/public/images/foto_diri/' .$img->foto_diri;
+            
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            
+            $photo = $request->file('foto_diri');
+            $destination = base_path().'/public/images/foto_diri/';
+            $filename = $photo->getClientOriginalName();
+            $photo->move($destination,$filename);
+            $foto_diri['foto_diri'] = $filename;
+        }
 
         // $daf = Registration1::where('nama_lengkap', $id)->first();
         // return compact('daf');
@@ -214,7 +221,7 @@ class Registration1Controller extends Controller
     }
 
     // dari inputan ke fuzzy
-    function calculate() {
+    public function calculate() {
         // variabel
         $total_umur = $randUmur;
         $total_tinggi_badan = $randTb;
@@ -270,6 +277,9 @@ class Registration1Controller extends Controller
             // return 1;
             $c = 1;
         }
+
+        $mfuzzy = [$a, $b, $c];
+        return $mfuzzy;
     }
 
     public function grupTinggiBadan($total_tinggi_badan) {
@@ -307,6 +317,9 @@ class Registration1Controller extends Controller
             // return 1;
             $c = 1;
         }
+
+        $mfuzzy = [$a, $b, $c];
+        return $mfuzzy;
     }
 
     public function grupBeratBadan($total_berat_badan) {
@@ -344,6 +357,9 @@ class Registration1Controller extends Controller
             // return 1;
             $c = 1;
         }
+
+        $mfuzzy = [$a, $b, $c];
+        return $mfuzzy;
     }
 
     public function grupPenghasilan($total_penghasilan) {
@@ -381,10 +397,175 @@ class Registration1Controller extends Controller
             // return 1;
             $c = 1;
         }
+
+        $mfuzzy = [$a, $b, $c];
+        return $mfuzzy;
     }
 
-    public function inference() {
-        //
-    }
+    // aplikasi fungsi implikasi if ... then ... dan alfa-predikat
+    public function inference($imp_umur, $imp_tb, $imp_bb, $imp_penghasilan) {
+        // mpkm, mpks, mpkk
+        $r1 = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
+        $r2 = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
+        $r3 = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
 
+        // mpbm, mpbs, mpbk
+        $r4 = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
+        $r5 = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
+        $r6 = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
+        
+        // mpgm, mpgs, mpgk
+        $r7 = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
+        $r8 = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
+        $r9 = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
+        
+        // mskm, msks, mskk
+        $r10 = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
+        $r11 = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
+        $r12 = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
+
+        // msbm, msbs, msbk
+        $r13 = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
+        $r14 = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
+        $r15 = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
+
+        // msgm, msgs, msgk
+        $r16 = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
+        $r17 = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
+        $r18 = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
+
+        // mtkm, mtks, mtkk
+        $r19 = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
+        $r20 = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
+        $r21 = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
+
+        // mtbm, mtbs, mtbk
+        $r22 = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
+        $r23 = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
+        $r24 = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
+
+        // mtgm, mtgs, mtgk
+        $r25 = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
+        $r26 = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
+        $r27 = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
+
+        // ppkm, ppks, ppkk
+        $r28 = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
+        $r29 = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
+        $r30 = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
+
+        // ppbm, ppbs, ppbk
+        $r31 = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
+        $r32 = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
+        $r33 = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
+
+        // ppgm, ppgs, ppgk
+        $r34 = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
+        $r35 = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
+        $r36 = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
+
+        // pskm,psks, pskk
+        $r37 = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
+        $r38 = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
+        $r39 = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
+
+        // psbm, psbs, psbk
+        $r40 = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
+        $r41 = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
+        $r42 = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
+
+        // psgm, psgs, psg
+        $r43 = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
+        $r44 = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
+        $r45 = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
+
+        // ptkm, ptks, ptkk
+        $r46 = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
+        $r47 = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
+        $r48 = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
+
+        // ptbm, ptbs, ptbk
+        $r49 = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
+        $r50 = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
+        $r51 = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
+
+        // ptgm, ptgs, ptgk
+        $r52 = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
+        $r53 = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
+        $r54 = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
+
+        // tpkm, tpks, tpkk
+        $r55 = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
+        $r56 = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
+        $r57 = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
+
+        // tpbm, tpbs, tpbk
+        $r58 = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
+        $r59 = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
+        $r60 = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
+
+        // tpgm, tpgs, tpgk
+        $r61 = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
+        $r62 = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
+        $r63 = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
+
+        // tskm, tsks, tskk
+        $r64 = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
+        $r65 = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
+        $r66 = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
+
+        // tsbm, tsbs, tsbk
+        $r67 = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
+        $r68 = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
+        $r69 = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
+
+        // tsgm, tsgs, tsgk
+        $r70 = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
+        $r71 = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
+        $r72 = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
+
+        // ttkm, ttks, ttkk
+        $r73 = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
+        $r74 = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
+        $r75 = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
+
+        // ttbm, ttbs, ttbk
+        $r76 = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
+        $r77 = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
+        $r78 = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
+
+        // ttgm, ttgs, ttgk
+        $r79 = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
+        $r80 = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
+        $r81 = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
+
+        $rules [81] = [$r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $r12, $r13, $r14, $r15, $r16, $r17, $r18, $r19, $r20, $r21, $r22, $r23, $r24, $r25, $r26, $r27, $r28, $r29, $r30, $r31, $r32, $r33, $r34, $r35, $r36, $r37, $r38, $r38, $r39, $r40, $r41, $r42, $r42, $r43, $r44, $r45, $r46, $r47, $r48, $r49, $r50, $r51, $r52, $r53, $r54, $r55, $r56, $r57, $r58, $r59, $r60, $r61, $r62, $r63, $r64, $r65, $r66, $r67, $r68, $r69, $r70, $r71, $r72, $r73, $r74, $r75, $r76, $r77, $r78, $r79, $r80, $r81];
+
+        $terkecil = $rules[$r1];
+
+        $i = 1;
+        while ($i >= 81) {
+            if ($terkecil < $rules[$i + 1]) {
+                $terkecil = $terkecil;
+            }
+        }
+
+        $terbesar = $rules[$r1];
+
+        $i = 1;
+        while ($i >= 81) {
+            if ($terbesar < $rules[$i + 1]) {
+                $terbesar = $terbesar;
+            }
+        }
+
+        // komposisi aturan
+        
+
+
+        //defuzzifikasi
+        $z = 0;
+        
+        return $z;
+    }
 }
