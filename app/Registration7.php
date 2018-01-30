@@ -24,6 +24,7 @@ class Registration7 extends Model
         'suku_calon_pasangan',          //kolom baru
         'bb_calon_pasangan',
         'randBb',
+        'status_calon_pasangan',
         'karakter_pasangan',
     ];
 

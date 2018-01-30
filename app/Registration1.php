@@ -20,7 +20,8 @@ class Registration1 extends Model
     	'handphone',
     	'alamat_tempat_tinggal',
         'pekerjaan',
-    	'status_pernikahan',
+        'status_pernikahan',
+    	'i_jumlahAnak',
     	'penghasilan',
     	'izin_menikah',
     	'alamat_tinggal_saat_ini'

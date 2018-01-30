@@ -26,6 +26,7 @@ class CreateRegistration1sTable extends Migration
             $table->string('pekerjaan');
             // $table->string('suku');
             $table->string('status_pernikahan');
+            $table->integer('i_jumlahAnak');
             $table->string('penghasilan');
             $table->string('izin_menikah');
             $table->string('alamat_tinggal_saat_ini');

@@ -57,8 +57,15 @@ class Registration8Controller extends Controller
             return redirect()->route('registration7');
         } elseif ($posisi == 8) {
             // $data['id_user'] = $request['id_user'];
-            return view('form/registration8');
+            // return view('form/registration8');
             // return redirect('registration/8');
+            $c = DB::table('registration1s')
+            ->select('status_pernikahan')
+            ->where('id_user', '=', Auth::user()->id)->first();
+            return view('form.registration8')->with('jandu', $c);
+        } elseif ($posisi == 9) {
+            // return redirect('registration/8');
+            return view('form/waiting');
         }
     }
 

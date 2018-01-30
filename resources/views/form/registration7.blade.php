@@ -44,19 +44,35 @@
 
 				{{ Form::hidden('randBb') }}
 
+				{{-- status pasangan --}}
+				<label id="l_status_calon_pasangan" style="margin-top: 20px">Status pasangan Anda</label>
+				{{-- jenis kelamin laki-laki --}}
+				{{-- {{$jekel->jenis_kelamin}} --}}
+				@if($jekel->jenis_kelamin == "Laki-laki")
+			    {{ Form::select('status_calon_pasangan', ['' => 'Status calon pasangan', 'Janda belum memiliki anak' => 'Janda belum memiliki anak', 'Janda sudah memiliki anak' => 'Janda sudah memiliki anak', 'Belum pernah menikah' => 'Belum pernah menikah'], null, array('class' => 'form-control', 'required' => '')) }}
+
+			    {{-- <select id="status_calon_pasangan"  class="form-control">
+					<option value="">Status calon pasangan</option>
+					<option id="Janda belum memiliki anak" name="Janda belum memiliki anak" value="Janda belum memiliki anak">Janda belum memiliki anak</option>
+					<option id="Janda sudah memiliki anak" name="Janda sudah memiliki anak" value="Janda sudah memiliki anak">Janda sudah memiliki anak</option>
+					<option id="Belum pernah menikah" name="Belum pernah menikah" value="Belum pernah menikah">Belum pernah menikah</option> --}}
+				</select>
+				
+				@elseif($jekel->jenis_kelamin == "Perempuan")
+				{{-- jenis kelamin perempuan --}}
+			    {{ Form::select('status_calon_pasangan', ['' => 'Status calon pasangan', 'Duda belum memiliki anak' => 'Duda belum memiliki anak', 'Duda sudah memiliki anak' => 'Duda sudah memiliki anak', 'Belum pernah menikah' => 'Belum pernah menikah'], null, array('class' => 'form-control', 'required' => '')) }}
+
+			    {{-- <select id="status_calon_pasangan" class="form-control">
+					<option value="">Status calon pasangan</option>
+					<option id="Duda belum memiliki anak" name="Duda belum memiliki anak" value="Duda belum memiliki anak">Duda belum memiliki anak</option>
+					<option id="Duda sudah memiliki anak" name="Duda sudah memiliki anak" value="Duda sudah memiliki anak">Duda sudah memiliki anak</option>
+					<option id="Belum pernah menikah" name="Belum pernah menikah" value="Belum pernah menikah">Belum pernah menikah</option>
+				</select> --}}
+				@endif
+
 			    {{ Form::label('karakter_pasangan', 'Ceritakan karakter pasangan seperti apa yang Anda inginkan', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{ Form::textarea('karakter_pasangan', null, array('class' => 'form-control', 'required' => '', 'style' => 'height: 20%', 'placeholder' => 'Ceritakan karakter pasangan seperti apa yang Anda inginkan')) }}
-
-			    {{-- <?php
-			    	if (?>$jenis_kelamin == "Laki-laki"<?php) {?>
-			    		{{ Form::label('status_pasangan', 'Status pasangan Anda', array('style' => 'margin-top: 20px')) }}
-						{{ Form::select('status_pasangan', ['' => 'Pilihan', 'Belum menikah' => 'Belum menikah', 'Janda belum punya anak' => 'Janda belum punya anak', 'Janda sudah punya anak' => 'Janda sudah punya anak'], null, array('class' => 'form-control', 'required' => '')) }}
-			    	<?php} elseif (?>$jenis_kelamin == "Perempuan"<?php) {?>
-			    		{{ Form::label('status_pasangan', 'Status pasangan Anda', array('style' => 'margin-top: 20px')) }}
-						{{ Form::select('status_pasangan', ['' => 'Pilihan', 'Belum menikah' => 'Belum menikah', 'Duda belum punya anak' => 'Duda belum punya anak', 'Duda sudah punya anak' => 'Duda sudah punya anak'], null, array('class' => 'form-control', 'required' => '')) }}
-			    	<?php}
-			    ?> --}}
 
 			    {{-- {{ Form::label('#', '* Beri tanda "-" jika tidak ada', array('style' => 'margin-top: 20px; color: red')) }} --}}
 			    <p style="font-size: 12px; color: red; margin-top: 5px">* Beri tanda "-" jika tidak ada</p>
@@ -67,5 +83,6 @@
 		</div>
 	</div>
 </div>
+
 @endsection
 {{-- @include('partials/_javascript') --}}

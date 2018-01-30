@@ -18,6 +18,7 @@
 			    {{ Form::number('berat_badan', null, array('class' => 'form-control', 'required' => '', 'min' => '0', 'maxlength' => '3', 'placeholder' => 'Berat badan dalam satuan (kg)')) }}
 
 			    {{ Form::label('gol_darah', 'Golongan Darah', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    <br>
 			    {{-- {{ Form::select('gol_darah', ['' => 'Pilih Golongan Darah', 'A' => 'A', 'B' => 'B', 'AB' => 'AB', 'O' => 'O'], null, array('class' => 'form-control', 'required' => '')) }} --}}
 			    {{ Form::radio('gol_darah', 'A', false, array('required' => '')) }}
@@ -35,6 +36,7 @@
 				<br>
 
 			    {{ Form::label('merokok', 'Apakah Anda Merokok', array('style' => 'margin-top: 20px')) }}
+			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{ Form::select('merokok', ['' => 'Pilihan Anda', 'Saya merokok' => 'Saya merokok', 'Saya merokok namun berniat untuk berhenti' => 'Saya merokok namun berniat untuk berhenti', 'Saya tidak merokok sama sekali' => 'Saya tidak merokok sama sekali'], null, array('class' => 'form-control', 'required' => '')) }}
 
 			    {{ Form::label('riwayat_kesehatan', 'Tuliskan riwayat kesehatan Anda', array('style' => 'margin-top: 20px')) }}

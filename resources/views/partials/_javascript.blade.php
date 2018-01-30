@@ -13,6 +13,7 @@
 <script src="{{ asset('/js/magnific-popup-options.js') }}"></script>
 <!-- Main -->
 <script src="{{ asset('/js/main.js') }}"></script>
+
 {{-- <script src="{{ asset('/js/parsley.min.js') }}"></script>
 <script src="{{ asset('/js/parsley.js') }}"></script> --}}
 {{-- <script src="{{ url('js/gallery.js') }}"></script> --}}

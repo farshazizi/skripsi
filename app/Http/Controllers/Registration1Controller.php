@@ -58,12 +58,6 @@ class Registration1Controller extends Controller
         } elseif ($posisi == 4) {
             // return redirect('registration/4');
             return redirect()->route('registration4');
-        } elseif ($posisi == 5) {
-            // return redirect('registration/5');
-            return redirect()->route('registration5');
-        } elseif ($posisi == 6) {
-            // return redirect('registration/6');
-            return redirect()->route('registration6');
         } elseif ($posisi == 7) {
             // return redirect('registration/7');
             return redirect()->route('registration7');
@@ -87,14 +81,13 @@ class Registration1Controller extends Controller
         // validate the data
         $this->validate($request, array(
             'posisi'                    => 'max:1',
-            'nama_lengkap'              => 'required',
+            // 'nama_lengkap'              => 'required',
             'tanggal_lahir'             => 'required',
             'jenis_kelamin'             => 'required',
             // 'alamat_email'              => 'required',
             'handphone'                 => 'required',
             'alamat_tempat_tinggal'     => 'required',
             'pekerjaan'                 => 'required',
-            // 'suku'                      => 'required',
             'status_pernikahan'         => 'required',
             'penghasilan'               => 'required',
             'izin_menikah'              => 'required',
@@ -106,15 +99,23 @@ class Registration1Controller extends Controller
 
         $reg1->id_user                     = Auth::user()->id;
         $reg1->posisi                      = $request->posisi;
-        $reg1->nama_lengkap                = $request->nama_lengkap;
+        $reg1->nama_lengkap                = Auth::user()->name;
         $reg1->tanggal_lahir               = $request->tanggal_lahir;
         $reg1->jenis_kelamin               = $request->jenis_kelamin;
         $reg1->alamat_email                = Auth::user()->email;
         $reg1->handphone                   = $request->handphone;
         $reg1->alamat_tempat_tinggal       = $request->alamat_tempat_tinggal;
         $reg1->pekerjaan                   = $request->pekerjaan;
-        // $reg1->suku                        = $request->suku;
         $reg1->status_pernikahan           = $request->status_pernikahan;
+        if ($reg1->status_pernikahan == "") {
+            $reg1->i_jumlahAnak = 0;
+        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah, tidak memiliki anak") {
+            $reg1->i_jumlahAnak = 0;
+        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah dan memiliki anak") {
+            $reg1->i_jumlahAnak = $request->i_jumlahAnak;
+        }elseif ($reg1->status_pernikahan == "Belum pernah menikah") {
+            $reg1->i_jumlahAnak = 0;
+        }
         $reg1->penghasilan                 = $request->penghasilan;
         $reg1->izin_menikah                = $request->izin_menikah;
         $reg1->alamat_tinggal_saat_ini     = $request->alamat_tinggal_saat_ini;
@@ -122,6 +123,7 @@ class Registration1Controller extends Controller
         
         $reg1->save();
 
+        // dd($request->all());
         // $data['id_user'] = $reg1->id;
         
         // dd($request->all());
@@ -177,9 +179,13 @@ class Registration1Controller extends Controller
             $foto_diri['foto_diri'] = $filename;
         }
 
+        // $z = calculate();
+        // calculate();
+        $this->calculate();
+
         // $daf = Registration1::where('nama_lengkap', $id)->first();
         // return compact('daf');
-        return view('admin.pages.detail', compact('daf'));
+        return view('admin.pages.detail', compact('daf'))->$this->calculate();;
     }
 
     /**
@@ -236,6 +242,7 @@ class Registration1Controller extends Controller
         
         //proses inferensi sampe defuzzifikasi dengan memanggil function "inference"
         $inferensi = inference($gUmur, $gTb, $gBb, $gPenghasilan);
+        return $inferensi;
 
         //kategorisasi hasil defuzzifikasi
         // $inferensi = Math.round($inferensi*100)/100;

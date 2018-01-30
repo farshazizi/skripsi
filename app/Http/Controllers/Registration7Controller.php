@@ -55,10 +55,17 @@ class Registration7Controller extends Controller
             return redirect()->route('registration4');
         } elseif ($posisi == 7) {
             // return redirect('registration/7');
-            return view('form/registration7');
+            // return view('form/registration7');
+             $c = DB::table('registration1s')
+            ->select('jenis_kelamin')
+            ->where('id_user', '=', Auth::user()->id)->first();
+            return view('form.registration7')->with('jekel', $c);
         } elseif ($posisi == 8) {
             // return redirect('registration8');
             return redirect()->route('registration8');
+        } elseif ($posisi == 9) {
+            // return redirect('registration/8');
+            return view('form/waiting');
         }
     }
 
@@ -70,6 +77,7 @@ class Registration7Controller extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // validate the data
         $this->validate($request, array(
             'umur_calon_pasangan'           => 'required',
@@ -78,6 +86,7 @@ class Registration7Controller extends Controller
             'penghasilan_calon_pasangan'    => 'required',
             'suku_calon_pasangan'           => 'required',
             'bb_calon_pasangan'             => 'required',
+            'status_calon_pasangan'         => 'required',
             'karakter_pasangan'             => 'required',
         ));
 
@@ -132,6 +141,7 @@ class Registration7Controller extends Controller
             $int = Random::generateInt(70, 100);
             $reg7->randBb = $int;
         }
+        $reg7->status_calon_pasangan        = $request->status_calon_pasangan;
         $reg7->karakter_pasangan            = $request->karakter_pasangan;
 
         $b = DB::table('registration1s')
@@ -166,7 +176,8 @@ class Registration7Controller extends Controller
      */
     public function show($id)
     {
-        //
+       
+       
     }
 
     /**

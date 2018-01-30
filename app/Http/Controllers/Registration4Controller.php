@@ -59,6 +59,9 @@ class Registration4Controller extends Controller
         } elseif ($posisi == 8) {
             // return redirect('registration8');
             return redirect()->route('registration8');
+        } elseif ($posisi == 9) {
+            // return redirect('registration/8');
+            return view('form/waiting');
         }
     }
 

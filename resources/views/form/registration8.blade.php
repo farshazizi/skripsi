@@ -12,18 +12,20 @@
 
 				{{ Form::label('ktp', 'Upload KTP', array('style' => 'margin-top: 20px')) }}
 				{{ Form::label('', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::file('ktp', null, array('class' => 'form-control', 'placeholder' => 'Cantumkan berupa link')) }}
+			    {{ Form::file('ktp', null, array('class' => 'form-control', 'placeholder' => 'Cantumkan berupa link', 'required' => '')) }}
 
 			    {{ Form::label('foto_diri', 'Upload foto diri terbaru (6 bulan terakhir)', array('style' => 'margin-top: 20px')) }}
 				{{ Form::label('', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::file('foto_diri', null, array('class' => 'form-control', 'placeholder' => 'Cantumkan berupa link')) }}
+			    {{ Form::file('foto_diri', null, array('class' => 'form-control', 'placeholder' => 'Cantumkan berupa link', 'required' => '')) }}
 
+			    @if($jandu->status_pernikahan == "Sudah pernah menikah, tidak memiliki anak" || $jandu->status_pernikahan == "Sudah pernah menikah dan memiliki anak")
 			    {{ Form::label('akte_cerai', 'Upload akte cerai janda/duda', array('style' => 'margin-top: 20px')) }}
 				{{-- {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }} --}}
 			    {{ Form::file('akte_cerai', null, array('class' => 'form-control', 'placeholder' => 'Cantumkan berupa link')) }}
+			    @endif
 
 			    {{-- {{ Form::label('#', '* Beri tanda "-" jika tidak ada', array('style' => 'margin-top: 20px; color: red')) }} --}}
-			    {{-- <p style="font-size: 12px; color: red; margin-top: 5px">* Beri tanda "-" jika tidak ada</p> --}}
+			    <p style="font-size: 12px; color: red; margin-top: 5px">* Wajib diisi</p>
 
 			    {{ Form::submit('Finish', array('class' => 'btn btn-primary btn-md btn-block', 'style' => 'margin-top: 3%')) }}
 
