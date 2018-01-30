@@ -86,6 +86,7 @@ class Registration8Controller extends Controller
         ));
 
         // // store in the database
+        $reg1 = new Registration1;
         $reg8 = new Registration8;
 
         $reg8->id_user      = Auth::user()->id;
@@ -104,12 +105,24 @@ class Registration8Controller extends Controller
         $reg8['foto_diri'] = $filename2;
 
         // $reg8->akte_cerai   = $request->akte_cerai;
-        $photo3 = $request->file('akte_cerai');
-        $destination3 = base_path().'/public/images/akte_cerai';
-        $filename3 = $photo3->getClientOriginalName();
-        $photo3->move($destination3,$filename3);
-        $reg8['akte_cerai'] = $filename3;
-
+        if ($reg1->status_pernikahan == "") {
+            $reg8->akte_cerai = "Tidak ada";
+        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah, tidak memiliki anak") {
+            $photo3 = $request->file('akte_cerai');
+            $destination3 = base_path().'/public/images/akte_cerai';
+            $filename3 = $photo3->getClientOriginalName();
+            $photo3->move($destination3,$filename3);
+            $reg8['akte_cerai'] = $filename3;
+        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah dan memiliki anak") {
+            $photo3 = $request->file('akte_cerai');
+            $destination3 = base_path().'/public/images/akte_cerai';
+            $filename3 = $photo3->getClientOriginalName();
+            $photo3->move($destination3,$filename3);
+            $reg8['akte_cerai'] = $filename3;
+        }elseif ($reg1->status_pernikahan == "Belum pernah menikah") {
+            $reg8->akte_cerai = "Tidak ada";
+        }
+        
         $b = DB::table('registration1s')
         ->select('id')
         ->where('id_user', '=', Auth::user()->id)->get();
