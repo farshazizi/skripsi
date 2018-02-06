@@ -50,6 +50,7 @@ Route::get('/admin/dashboard', function () {
 Route::resource('/admin/user', 'DaftarController');
 Route::get('/admin/match', 'Registration1Controller@index');
 Route::resource('/admin/match', 'Registration1Controller');
+// Route::get('admin/match', ['uses' => 'Registration1Controller@show', 'as' => 'registration']);
 // Route::get('/admin/match/{nama_lengkap}', 'Registration1Controller@calculate');
 // Route::resource('/admin/match', 'Registration2Controller');
 // Route::resource('/admin_perhitungan', 'Registration1Controller');

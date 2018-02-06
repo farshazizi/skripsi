@@ -11,7 +11,7 @@
 				{{ Form::hidden('id_user') }}
 
 				{{ Form::label('umur_calon_pasangan', 'Kategori umur pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('umur_calon_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda', 'Dewasa' => 'Dewasa', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::select('umur_calon_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda (18 - 25 tahun)', 'Dewasa' => 'Dewasa', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randUmur') }}
 
