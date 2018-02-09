@@ -15,6 +15,7 @@ class Registration1 extends Model
         'posisi',
     	'nama_lengkap',
     	'tanggal_lahir',
+        'usia',
     	'jenis_kelamin',
     	'alamat_email',
     	'handphone',

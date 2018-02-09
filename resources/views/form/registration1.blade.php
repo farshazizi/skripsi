@@ -5,9 +5,9 @@
 <div class="container">
 	<div class="row" style="margin-bottom: 5%">
 		<div class="col-md-6 col-md-offset-3">
-			@foreach($errors->all() as $error)
+			{{-- @foreach($errors->all() as $error)
 				{{ $error }}<br>
-			@endforeach
+			@endforeach --}}
 			{!! Form::open(['route' => 'registration.store']) !!}
 
 				{{ Form::hidden('id_user') }}
@@ -20,6 +20,8 @@
 			    {{ Form::label('tanggal_lahir', 'Tanggal Lahir', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{ Form::date('tanggal_lahir', null, array('class' => 'form-control', 'required' => '')) }}
+
+			    {{ Form::hidden('usia') }}
 
 			    {{ Form::label('jenis_kelamin', 'Jenis Kelamin', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
@@ -54,9 +56,6 @@
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 			    {{ Form::text('pekerjaan', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Pekerjaan')) }}
 
-			    {{-- {{ Form::label('suku', 'Suku', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::text('suku', null, array('class' => 'form-control', 'required' => '', 'placeholder' => 'Suku')) }} --}}
-
 			    {{ Form::label('status_pernikahan', 'Status Pernikahan', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
 				{{ Form::select('status_pernikahan', ['' => 'Status Pernikahan', 'Sudah pernah menikah, tidak memiliki anak' => 'Sudah pernah menikah, tidak memiliki anak', 'Sudah pernah menikah dan memiliki anak' => 'Sudah pernah menikah dan memiliki anak', 'Belum pernah menikah' => 'Belum pernah menikah'], null, array('class' => 'form-control', 'required' => '', 'id' => 'status_pernikahan')) }}
@@ -75,7 +74,8 @@
 
 			    {{ Form::label('penghasilan', 'Berapa Penghasilan Anda Perbulan Saat Ini (perbulan)', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
-			    {{ Form::select('penghasilan', ['' => 'Penghasilan Perbulan', '<4000000' => '< Rp4.000.000', '4000000-6000000' => 'Rp4.000.000 - Rp6.000.000', '>6000000' => '> Rp6.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
+			    {{-- {{ Form::select('penghasilan', ['' => 'Penghasilan Perbulan', '<4000000' => '< Rp4.000.000', '4000000-6000000' => 'Rp4.000.000 - Rp6.000.000', '>6000000' => '> Rp6.000.000'], null, array('class' => 'form-control', 'required' => '')) }} --}}
+			    {{ Form::number('penghasilan', null, array('class' => 'form-control', 'required' => '', 'min' => '0', 'placeholder' => 'Rata-rata penghasilan perbulan')) }}
 
 			    {{ Form::label('izin_menikah', 'Izin Menikah/Restu Menikah', array('style' => 'margin-top: 20px')) }}
 			    {{ Form::label('#', '*', array('style' => 'margin-top: 20px; color: red')) }}
@@ -101,6 +101,7 @@
 		</div>
 	</div>
 </div>
+
 <script src="{{ asset('js/status.js')}}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -127,4 +128,5 @@
 	  });
 	});
 </script>
+
 @endsection

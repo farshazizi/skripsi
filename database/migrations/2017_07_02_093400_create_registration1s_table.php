@@ -19,6 +19,7 @@ class CreateRegistration1sTable extends Migration
             $table->integer('posisi')->unsigned();
             $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
+            $table->integer('usia');
             $table->string('jenis_kelamin');
             $table->string('alamat_email');
             $table->string('handphone');
@@ -27,7 +28,7 @@ class CreateRegistration1sTable extends Migration
             // $table->string('suku');
             $table->string('status_pernikahan');
             $table->integer('i_jumlahAnak');
-            $table->string('penghasilan');
+            $table->integer('penghasilan');
             $table->string('izin_menikah');
             $table->string('alamat_tinggal_saat_ini');
             $table->timestamps();

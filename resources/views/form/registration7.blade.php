@@ -11,12 +11,12 @@
 				{{ Form::hidden('id_user') }}
 
 				{{ Form::label('umur_calon_pasangan', 'Kategori umur pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('umur_calon_pasangan', ['' => 'Pilihan', 'Muda' => 'Muda (18 - 25 tahun)', 'Dewasa' => 'Dewasa', 'Tua' => 'Tua'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::select('umur_calon_pasangan', ['' => 'Pilihan', 'Remaja' => 'Remaja (< 23 tahun)', 'Dewasa' => 'Dewasa (24 - 32 tahun)', 'Tua' => 'Tua (> 33 tahun)'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randUmur') }}
 
 				{{ Form::label('tb_calon_pasangan', 'Kategori tinggi badan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('tb_calon_pasangan', ['' => 'Pilihan', 'Pendek' => 'Pendek', 'Sedang' => 'Sedang', 'Tinggi' => 'Tinggi'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::select('tb_calon_pasangan', ['' => 'Pilihan', 'Pendek' => 'Pendek (< 160 cm)', 'Sedang' => 'Sedang (161 cm - 174 cm)', 'Tinggi' => 'Tinggi (> 175 cm)'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randTb') }}
 				{{-- {{ Form::label('randUmur', 'randUmur randUmur', array('style' => 'margin-top: 20px')) }}
@@ -26,7 +26,7 @@
 				{{ Form::select('merokok_calon_pasangan', ['' => 'Pilihan', 'Iya, tidak masalah' => 'Iya, tidak masalah', 'Iya, asalkan berniat untuk berhenti' => 'Iya, asalkan berniat untuk berhenti', 'Tidak, saya tidak suka perokok' => 'Tidak, saya tidak suka perokok'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::label('penghasilan_calon_pasangan', 'Rata-rata penghasilan calon pasangan Anda (perbulan)', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('penghasilan_calon_pasangan', ['' => 'Pilihan', 'Miskin' => '< Rp4.000.000', 'Sedang' => 'Rp4.000.000 - Rp6.000.000', 'Kaya' => '> Rp6.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::select('penghasilan_calon_pasangan', ['' => 'Pilihan', 'Rendah' => '< Rp3.500.000', 'Sedang' => 'Rp3.500.000 - Rp8.000.000', 'Tinggi' => '> Rp8.000.000'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randPenghasilan') }}
 
@@ -40,7 +40,7 @@
 				<br>
 
 				{{ Form::label('bb_calon_pasangan', 'Kategori berat badan calon pasangan Anda', array('style' => 'margin-top: 20px')) }}
-				{{ Form::select('bb_calon_pasangan', ['' => 'Pilihan', 'Kurus' => 'Kurus', 'Berisi' => 'Berisi', 'Gemuk' => 'Gemuk'], null, array('class' => 'form-control', 'required' => '')) }}
+				{{ Form::select('bb_calon_pasangan', ['' => 'Pilihan', 'Kurus' => 'Kurus (< 50 kg)', 'Berisi' => 'Berisi (51 kg - 74 kg)', 'Gemuk' => 'Gemuk (> 75 kg)'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randBb') }}
 
@@ -56,7 +56,7 @@
 					<option id="Janda belum memiliki anak" name="Janda belum memiliki anak" value="Janda belum memiliki anak">Janda belum memiliki anak</option>
 					<option id="Janda sudah memiliki anak" name="Janda sudah memiliki anak" value="Janda sudah memiliki anak">Janda sudah memiliki anak</option>
 					<option id="Belum pernah menikah" name="Belum pernah menikah" value="Belum pernah menikah">Belum pernah menikah</option> --}}
-				</select>
+				{{-- </select> --}}
 				
 				@elseif($jekel->jenis_kelamin == "Perempuan")
 				{{-- jenis kelamin perempuan --}}
