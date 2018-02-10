@@ -19,8 +19,6 @@
 				{{ Form::select('tb_calon_pasangan', ['' => 'Pilihan', 'Pendek' => 'Pendek (< 160 cm)', 'Sedang' => 'Sedang (161 cm - 174 cm)', 'Tinggi' => 'Tinggi (> 175 cm)'], null, array('class' => 'form-control', 'required' => '')) }}
 
 				{{ Form::hidden('randTb') }}
-				{{-- {{ Form::label('randUmur', 'randUmur randUmur', array('style' => 'margin-top: 20px')) }}
-			    {{ Form::text('randUmur', null, array('class' => 'form-control', 'placeholder' => 'Nama lengkap')) }} --}}
 
 				{{ Form::label('merokok_calon_pasangan', 'Apakah Anda menerima calon pasangan yang merokok', array('style' => 'margin-top: 20px')) }}
 				{{ Form::select('merokok_calon_pasangan', ['' => 'Pilihan', 'Iya, tidak masalah' => 'Iya, tidak masalah', 'Iya, asalkan berniat untuk berhenti' => 'Iya, asalkan berniat untuk berhenti', 'Tidak, saya tidak suka perokok' => 'Tidak, saya tidak suka perokok'], null, array('class' => 'form-control', 'required' => '')) }}

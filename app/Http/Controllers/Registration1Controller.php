@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Registration1;
 use App\Registration2;
+use App\Hasil;
 use Session;
 use Auth;
 use DB;
 use DateTime;
+use App\Acuan_penghasilan;
 
 class Registration1Controller extends Controller
 {
@@ -119,11 +121,17 @@ class Registration1Controller extends Controller
         } elseif ($reg1->status_pernikahan == "Sudah pernah menikah, tidak memiliki anak") {
             $reg1->i_jumlahAnak = 0;
         } elseif ($reg1->status_pernikahan == "Sudah pernah menikah dan memiliki anak") {
-            $reg1->i_jumlahAnak = $request->i_jumlahAnak;
+            $reg1->i_jumlahAnak            = $request->i_jumlahAnak;
         }elseif ($reg1->status_pernikahan == "Belum pernah menikah") {
             $reg1->i_jumlahAnak = 0;
         }
-        $reg1->penghasilan                 = $request->penghasilan;
+        if ($reg1->penghasilan > 12000000) {
+            $reg1->penghasilan             = 12000000;
+        } elseif ($reg1->penghasilan < 500000) {
+            $reg1->penghasilan             = 500000;
+        } else {
+            $reg1->penghasilan             = $request->penghasilan;
+        }
         $reg1->izin_menikah                = $request->izin_menikah;
         $reg1->alamat_tinggal_saat_ini     = $request->alamat_tinggal_saat_ini;
         $reg1->posisi = 2;
@@ -199,8 +207,36 @@ class Registration1Controller extends Controller
         $ekspektasiTb = $ekspektasiUser->randTb;
         $ekspektasiBb = $ekspektasiUser->randBb;
         $ekspektasiPenghasilan = $ekspektasiUser->randPenghasilan;
-        $arrayEkspektasi = array($ekspektasiUsia,$ekspektasiTb,$ekspektasiBb,$ekspektasiPenghasilan);
-
+        // $arrayEkspektasi = array($ekspektasiUsia,$ekspektasiTb,$ekspektasiBb,$ekspektasiPenghasilan);
+        $acuanUsia = DB::table('acuan_usia')
+            ->where('bb_usia','<=', $ekspektasiUsia)
+            ->where('ba_usia', '>=', $ekspektasiUsia)
+            ->selectRaw('min(bb_usia) as bb_usia, max(ba_usia) as ba_usia')
+            ->get();
+        $acuanTb = DB::table('acuan_tb')
+            ->where('bb_tb','<=', $ekspektasiTb)
+            ->where('ba_tb', '>=', $ekspektasiTb)
+            ->selectRaw('min(bb_tb)  as bb_tb, max(ba_tb) as ba_tb')
+            ->get();
+        $acuanBb = DB::table('acuan_bb')
+            ->where('bb_bb','<=', $ekspektasiBb)
+            ->where('ba_bb', '>=', $ekspektasiBb)
+            ->selectRaw('min(bb_bb)  as bb_bb, max(ba_bb) as ba_bb')
+            ->get();
+        $acuanPenghasilan = DB::table('acuan_penghasilan')
+            ->where('bb_penghasilan','<=', $ekspektasiPenghasilan)
+            ->where('ba_penghasilan', '>=', $ekspektasiPenghasilan)
+            ->selectRaw('min(bb_penghasilan)  as bb_penghasilan, max(ba_penghasilan) as ba_penghasilan')
+            ->get();
+ // $acuanPenghasilan = $acuanPenghasilan->toArray();
+        $arrayAcuan = array($acuanUsia->toArray(), $acuanTb->toArray(), $acuanBb->toArray(), $acuanPenghasilan->toArray());
+        // $acuanUsia->toArray();
+        $acuanUsia = $acuanUsia->toArray();
+        $acuanTb = $acuanTb->toArray();
+        $acuanBb =  $acuanBb->toArray();
+        $acuanPenghasilan =  $acuanPenghasilan->toArray();
+        // dd($acuanUsia[0]->bb_usia);
+ 
         // filter suku
         $confirm = "Iya";
         if($confirm == "Iya") {
@@ -209,12 +245,32 @@ class Registration1Controller extends Controller
                 ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
                 ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
                 ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
-                   ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                // ->where('users.id','=', '26')
+                ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
            $sukuAyah = $daf->suku_ayah;
            $sukuIbu = $daf->suku_ibu;
             $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
                 $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
                 ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
+            });
+
+            $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+            $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+            $bbAcuanTb = $acuanTb[0]->bb_tb;
+            $baAcuanTb = $acuanTb[0]->ba_tb;
+
+            $bbAcuanBb = $acuanBb[0]->bb_bb;
+            $baAcuanBb = $acuanBb[0]->ba_bb;
+
+            $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+            $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+            $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
             });
 
             $calonPasangan = $calonPasangan1->get();
@@ -225,44 +281,105 @@ class Registration1Controller extends Controller
                 ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan')
                 ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
                 ->get();
+
+            $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+            $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+            $bbAcuanTb = $acuanTb[0]->bb_tb;
+            $baAcuanTb = $acuanTb[0]->ba_tb;
+
+            $bbAcuanBb = $acuanBb[0]->bb_bb;
+            $baAcuanBb = $acuanBb[0]->ba_bb;
+
+            $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+            $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+            $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+            });
+
+            $calonPasangan = $calonPasangan1->get();
         }
         // dd($a);
         // dd($calonPasangan);
         // end filter suku
-
+// dd($calonPasangan);
         $jumlahdata = count($calonPasangan);
+        // dd($jumlahdata);
+
         for($i = 0; $i < $jumlahdata; $i++) {
             $usiaCalon = $calonPasangan[$i]->usia;
             $tinggiCalon = $calonPasangan[$i]->tinggi_badan;
             $beratCalon = $calonPasangan[$i]->berat_badan;
             $penghasilanCalon = $calonPasangan[$i]->penghasilan;
             $arrayCalon = array($usiaCalon,$tinggiCalon,$beratCalon,$penghasilanCalon);
-            $result = array_intersect($arrayEkspektasi, $arrayCalon);
-            $totalKesamaan = count($result);
 
-            if($totalKesamaan == 4) {
-                $statusKecocokan = "Sangat Cocok";
-            } elseif ($totalKesamaan == 3) {
-                $statusKecocokan = "Cocok";
-            } elseif ($totalKesamaan == 2) {
-                $statusKecocokan = "Cukup Cocok";
-            } elseif ($totalKesamaan == 1) {
-                $statusKecocokan = "Kurang Cocok";
-            } elseif ($totalKesamaan == 0) {
-                $statusKecocokan = "Tidak Cocok";
-            }
+            // $result = array_intersect($arrayEkspektasi, $arrayCalon);
+            // $totalKesamaan = count($result);
 
+            // if($totalKesamaan == 4) {
+            //     $statusKecocokan = "Sangat Cocok";
+            // } elseif ($totalKesamaan == 3) {
+            //     $statusKecocokan = "Cocok";
+            // } elseif ($totalKesamaan == 2) {
+            //     $statusKecocokan = "Cukup Cocok";
+            // } elseif ($totalKesamaan == 1) {
+            //     $statusKecocokan = "Kurang Cocok";
+            // } elseif ($totalKesamaan == 0) {
+            //     $statusKecocokan = "Tidak Cocok";
+            // }
+       
             $gUmur = $this->grupUmur($usiaCalon);
             $gTinggiBadan = $this->grupTinggiBadan($tinggiCalon);
             $gBeratBadan = $this->grupBeratBadan($beratCalon);
             $gPenghasilan = $this->grupPenghasilan($penghasilanCalon);
             $inference = $this->inference($gUmur, $gTinggiBadan, $gBeratBadan, $gPenghasilan);
             // $totalSkor = $gUmur + $gTinggiBadan + $gBeratBadan + $gPenghasilan;
-            $arrayHasil = array($calonPasangan[$i]->id,$calonPasangan[$i]->nama_lengkap, $statusKecocokan, $inference);
-            // dd($inference);
+            // $arrayHasil[$i] = array($calonPasangan[$i]->id => $inference);
+            $has = new Hasil;
+            $has->id_pencari = $daf->id;
+            $has->id_calon = $calonPasangan[$i]->id;
+            $has->nilai = $inference;
+            // $has->save();
+            // dd($statusKecocokan);
+            // dd($gPenghasilan);
         }
+        $lolos = DB::table('hasil')
+                    ->join('users','users.id','hasil.id_calon')
+                    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                    ->leftJoin('registration4s', 'users.id', '=', 'registration4s.id_user')
+                    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                    ->leftJoin('registration8s', 'users.id', '=', 'registration8s.id_user')
+                    ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.foto_diri', 'hasil.nilai')
+                    ->limit(3)
+                    ->orderby('nilai','DESC')
+                    ->get();
+        // $data = array(
+        //     ''
+        // )
+        $lolos = $lolos->toArray();
+      // foreach ($lolos as $key ) {
+            
+      //       // dd($key);
+      // }
+         // $calonFix = DB::table('users')
+         //    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+         //    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+         //    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+         //    ->leftJoin('registration4s', 'users.id', '=', 'registration4s.id_user')
+         //    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+         //    ->leftJoin('registration8s', 'users.id', '=', 'registration8s.id_user')
+         //    ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.foto_diri')
+         //        ->where('registration1s.jenis_kelamin','=', $daf->jenis_kelamin)
+         //        ->whereIn('')
+         //        ->get();
         
-        // dd($arrayHasil);
+     // dd($lolos);
 
         // $total_umur = $b->randUmur;
         // $total_tinggi_badan = $b->randTb;
@@ -282,8 +399,9 @@ class Registration1Controller extends Controller
 
         // $daf = Registration1::where('nama_lengkap', $id)->first();
         // return compact('daf');
-        return view('admin.pages.detail', compact('daf'));
-        // return view('admin.pages.detail', compact('daf'))->$this->calculate();
+        // return view('admin.pages.detail', compact('daf'));
+        return view('admin.pages.detail', compact('daf'))
+                 ->with('name',  $lolos);
     }
 
     /**
@@ -654,7 +772,7 @@ class Registration1Controller extends Controller
 
         $z1 = $areaZ/$miuY;
         $z = number_format($z1, 2);
-
+        // dd($areaZ);
         // $z = ;
         // $z = array($a1, $a2);
                     

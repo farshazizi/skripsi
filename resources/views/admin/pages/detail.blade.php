@@ -139,6 +139,7 @@
 							<!-- Close Modal -->
 			    		</div>
 			    	</div>
+			    	@foreach($name as $data)
 			    	<div class="row" style="margin-top: 2%">
 			    		<div class="col-4">
 			    			<div class="card" style="width: 20rem;">
@@ -148,28 +149,28 @@
 										<tr>
 											<td><b>Id user</b></td>
 											<td>:</td>
-											<td>{{ $daf->id_user }}</td>
+											<td>{{ $data->id_user }}</td>
 										</tr>
 										<tr>
 											<td><b>Nama Lengkap</b></td>
 											<td>:</td>
-											<td>{{ $daf->nama_lengkap }}</td>
+											<td>{{ $data->nama_lengkap }}</td>
 										</tr>
 										<tr>
 											<td><b>Usia</b></td>
 				                            <td>:</td>
-				                            <td>{{ $daf->tanggal_lahir }} tahun</td>
+				                            <td>{{ $data->tanggal_lahir }} tahun</td>
 										</tr>
 										<tr>
 				                            <td><b>Domisili</b></td>
 				                            <td>:</td>
-				                            <td>{{ $daf->alamat_tinggal_saat_ini }}</td>
+				                            <td>{{ $data->alamat_tinggal_saat_ini }}</td>
 				                            <td></td>
 				                        </tr>
 				                        <tr>
 					                        <td><b>No. Handphone</b></td>
 					                        <td>:</td>
-					                        <td>{{ $daf->handphone }}</td>
+					                        <td>{{ $data->handphone }}</td>
 					                        <td></td>
 				                        </tr>
 									</table>
@@ -201,128 +202,8 @@
 								</div>
 							</div>	
 			    		</div>
-			    		<div class="col-4">
-			    			<div class="card" style="width: 20rem;">
-								<img class="card-img-top" src="{{ asset('images/menikah.png') }}" alt="Card image cap" style="width:100%; height:auto;">
-								<div class="card-body">
-									<table>
-										<tr>
-											<td><b>Id user</b></td>
-											<td>:</td>
-											<td>{{ $daf->id_user }}</td>
-										</tr>
-										<tr>
-											<td><b>Nama Lengkap</b></td>
-											<td>:</td>
-											<td>{{ $daf->nama_lengkap }}</td>
-										</tr>
-										<tr>
-											<td><b>Usia</b></td>
-				                            <td>:</td>
-				                            <td>{{ $daf->tanggal_lahir }} tahun</td>
-										</tr>
-										<tr>
-			                            <td><b>Domisili</b></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->alamat_tinggal_saat_ini }}</td>
-			                            <td></td>
-			                        </tr>
-			                         <tr>
-			                            <td><b>No. Handphone</b></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->handphone }}</td>
-			                            <td></td>
-			                        </tr>
-									</table>
-									<!-- Button Modal -->
-									<button type="button" class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#Matcher2" style="margin-top: 5%;">
-									View More
-									</button>
-									<!-- Modal -->
-									<div class="modal fade" id="Matcher2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									  <div class="modal-dialog" role="document">
-									    <div class="modal-content">
-									      <div class="modal-header">
-									        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									          <span aria-hidden="true">&times;</span>
-									        </button>
-									      </div>
-									      <div class="modal-body">
-									        ...
-									      </div>
-									      <div class="modal-footer">
-									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-									        {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
-									      </div>
-									    </div>
-									  </div>
-									</div>
-									<!-- Close Modal -->
-								</div>
-							</div>	
-			    		</div>
-			    		<div class="col-4">
-			    			<div class="card" style="width: 20rem;">
-								<img class="card-img-top" src="{{ asset('images/menikah.png') }}" alt="Card image cap" style="width:100%; height:auto;">
-								<div class="card-body">
-									<table>
-										<tr>
-											<td><b>Id user</b></td>
-											<td>:</td>
-											<td>{{ $daf->id_user }}</td>
-										</tr>
-										<tr>
-											<td><b>Nama Lengkap</b></td>
-											<td>:</td>
-											<td>{{ $daf->nama_lengkap }}</td>
-										</tr>
-										<tr>
-											<td><b>Usia</b></td>
-				                            <td>:</td>
-				                            <td>{{ $daf->tanggal_lahir }} tahun</td>
-										</tr>
-										<tr>
-			                            <td><b>Domisili</b></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->alamat_tinggal_saat_ini }}</td>
-			                            <td></td>
-			                        </tr>
-			                         <tr>
-			                            <td><b>No. Handphone</b></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->handphone }}</td>
-			                            <td></td>
-			                        </tr>
-									</table>
-									<!-- Button Modal -->
-									<button type="button" class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#Matcher3" style="margin-top: 5%;">
-									View More
-									</button>
-									<!-- Modal -->
-									<div class="modal fade" id="Matcher3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									  <div class="modal-dialog" role="document">
-									    <div class="modal-content">
-									      <div class="modal-header">
-									        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									          <span aria-hidden="true">&times;</span>
-									        </button>
-									      </div>
-									      <div class="modal-body">
-									        ...
-									      </div>
-									      <div class="modal-footer">
-									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-									        {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
-									      </div>
-									    </div>
-									  </div>
-									</div>
-									<!-- Close Modal -->
-								</div>
-			    		</div>
-			    	</div>
+			    		@endforeach
+			    		
 			    	{{-- <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
 				        <thead>
 				        	<tr></tr>
