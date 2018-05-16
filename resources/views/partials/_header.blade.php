@@ -41,6 +41,6 @@
 <![endif]-->
 <link rel="icon" href="{{ asset('/images/icon.png') }}">
 
-<script src="//load.sumome.com/" data-sumo-site-id="d9e70b72efb3d66bd101617e03e25433fd9d249c7b6190eb3ddb3e7a81803184" async="async"></script>
+{{-- <script src="//load.sumome.com/" data-sumo-site-id="d9e70b72efb3d66bd101617e03e25433fd9d249c7b6190eb3ddb3e7a81803184" async="async"></script> --}}
 
 <script type="text/javascript" src="{{ asset('/js/sweet.js') }}"></script>

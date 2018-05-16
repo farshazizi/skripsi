@@ -84,10 +84,10 @@ class SendResetController extends Controller
         //
     }
 
-    public function send(){
-        Mail::send(['text'=>'mail'],['name', 'Sarthak'], function($message) { 
-            $message->to('farshazizi22@gmail.com', 'Restok')->subject('Reset Password'); 
-            $message->from('qtaaruf.indonesia@gmail.com', 'Bitfumes'); 
-        });
-    }
+    // public function send(){
+    //     Mail::send(['text'=>'mail'],['name', 'Sarthak'], function($message) { 
+    //         $message->to('farshazizi22@gmail.com', 'Restok')->subject('Reset Password'); 
+    //         $message->from('qtaaruf.indonesia@gmail.com', 'Bitfumes'); 
+    //     });
+    // }
 }

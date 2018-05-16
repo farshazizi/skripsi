@@ -38,7 +38,7 @@ Route::get('/daftar', 'DaftarController@create');
 Route::post('/daftar', 'DaftarController@store')->name('daftar.store');
 
 // RESET PASSWORD
-// Route::get('password/email/{token?}', 'Auth\ResetPasswordController@showResetForm');
+Route::get('password/email/{token?}', 'Auth\ResetPasswordController@showResetForm');
 Route::post('password/email', 'Auth\ResetPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 // END RESET PASSWORD
@@ -48,8 +48,9 @@ Route::get('/admin/dashboard', function () {
     return view('/admin/pages/dash');
 });
 Route::resource('/admin/user', 'DaftarController');
-Route::get('/admin/match', 'Registration1Controller@index');
+// Route::get('/admin/match', 'Registration1Controller@index');
 Route::resource('/admin/match', 'Registration1Controller');
+Route::post('/admin/match', 'Registration1Controller@postEmail')->name('match.postEmail');
 // Route::get('admin/match', ['uses' => 'Registration1Controller@show', 'as' => 'registration']);
 // Route::get('/admin/match/{nama_lengkap}', 'Registration1Controller@calculate');
 // Route::resource('/admin/match', 'Registration2Controller');

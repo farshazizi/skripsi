@@ -13,14 +13,7 @@ class CreateKriteriaTable extends Migration
      */
     public function up()
     {
-        Schema::create('kriterias', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('kriteria');
-            $table->string('batas_bawah');
-            $table->string('batas_atas');
-            $table->string('keterangan');
-            $table->timestamps();
-        });
+        //
     }
 
     /**

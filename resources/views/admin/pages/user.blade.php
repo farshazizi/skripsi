@@ -23,10 +23,11 @@
 	          </tr>
 	        </thead>
 	        <tbody>
+	        	<?php $i = 1; ?>
 				@foreach($daf as $daf)
 
 					<tr>
-						<th>{{ $daf->id }}</th>
+						<th>{{ $i++ }}</th>
 						<td>{{ $daf->nama_lengkap }}</td>
 						<td>{{ $daf->tanggal_lahir }}</td>
 						<td>{{ $daf->jenis_kelamin }}</td>

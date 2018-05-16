@@ -52,10 +52,10 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user){
         // dd($user->hasRole('admin'));
         // dd($request->all());
-        if ($user->hasRole('admin')) {// do your margic here
-            return redirect('/reborn');
-        }else{
-            return redirect('/home');
-        }
+        // if ($user->hasRole('admin')) {// do your margic here
+        //     return redirect('/reborn');
+        // }else{
+        //     return redirect('/home');
+        // }
     }
 }

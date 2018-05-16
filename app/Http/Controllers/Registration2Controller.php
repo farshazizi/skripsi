@@ -91,7 +91,21 @@ class Registration2Controller extends Controller
 
         $reg2->id_user           = Auth::user()->id;
         $reg2->tinggi_badan      = $request->tinggi_badan;
+        if ($reg1->tinggi_badan >= 120 && $reg1->tinggi_badan <= 200) {
+            $reg1->tinggi_badan = $request->tinggi_badan;
+        } elseif ($reg1->tinggi_badan < 120) {
+            $reg1->tinggi_badan = 120;
+        } elseif ($reg1->tinggi_badan > 200) {
+            $reg1->tinggi_badan = 200;
+        }
         $reg2->berat_badan       = $request->berat_badan;
+        if ($reg1->berat_badan >= 40 && $reg1->berat_badan <= 100) {
+            $reg1->berat_badan = $request->berat_badan;
+        } elseif ($reg1->berat_badan < 40) {
+            $reg1->berat_badan = 40;
+        } elseif ($reg1->berat_badan > 100) {
+            $reg1->berat_badan = 100;
+        }
         $reg2->gol_darah         = $request->gol_darah;
         $reg2->merokok           = $request->merokok;
         $reg2->riwayat_kesehatan = $request->riwayat_kesehatan;

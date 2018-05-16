@@ -96,49 +96,49 @@ class Registration7Controller extends Controller
 
         $reg7->id_user                      = Auth::user()->id;
         $reg7->umur_calon_pasangan          = $request->umur_calon_pasangan;
-        if ($reg7->umur_calon_pasangan == "Muda") {
-            $int = Random::generateInt(18, 25);
+        if ($reg7->umur_calon_pasangan == "Remaja") {
+            $int = Random::generateInt(18, 27);
             $reg7->randUmur = $int;
         } elseif ($reg7->umur_calon_pasangan == "Dewasa") {
-            $int = Random::generateInt(23, 33);
+            $int = Random::generateInt(24, 32);
             $reg7->randUmur = $int;
         } elseif ($reg7->umur_calon_pasangan == "Tua") {
-            $int = Random::generateInt(31, 35);
+            $int = Random::generateInt(29, 35);
             $reg7->randUmur = $int;
         }
         $reg7->tb_calon_pasangan            = $request->tb_calon_pasangan;
         if ($reg7->tb_calon_pasangan == "Pendek") {
-            $int = Random::generateInt(50, 165);
+            $int = Random::generateInt(120, 167);
             $reg7->randTb = $int;
         } elseif ($reg7->tb_calon_pasangan == "Sedang") {
-            $int = Random::generateInt(160, 175);
+            $int = Random::generateInt(161, 174);
             $reg7->randTb = $int;
         } elseif ($reg7->tb_calon_pasangan == "Tinggi") {
-            $int = Random::generateInt(170, 200);
+            $int = Random::generateInt(169, 200);
             $reg7->randTb = $int;
         }
         $reg7->merokok_calon_pasangan       = $request->merokok_calon_pasangan;
         $reg7->penghasilan_calon_pasangan   = $request->penghasilan_calon_pasangan;
-        if ($reg7->penghasilan_calon_pasangan == "Miskin") {
-            $int = Random::generateInt(500000, 4000000);
+        if ($reg7->penghasilan_calon_pasangan == "Rendah") {
+            $int = Random::generateInt(500000, 7999999);
             $reg7->randPenghasilan = $int;
         } elseif ($reg7->penghasilan_calon_pasangan == "Sedang") {
-            $int = Random::generateInt(3500000, 8000000);
+            $int = Random::generateInt(3500001, 11999999);
             $reg7->randPenghasilan = $int;
-        } elseif ($reg7->penghasilan_calon_pasangan == "Kaya") {
-            $int = Random::generateInt(6000000, 12000000);
+        } elseif ($reg7->penghasilan_calon_pasangan == "Tinggi") {
+            $int = Random::generateInt(8000001, 15000000);
             $reg7->randPenghasilan = $int;
         }
         $reg7->suku_calon_pasangan          = $request->suku_calon_pasangan;
         $reg7->bb_calon_pasangan            = $request->bb_calon_pasangan;
         if ($reg7->bb_calon_pasangan == "Kurus") {
-            $int = Random::generateInt(40, 55);
+            $int = Random::generateInt(40, 64);
             $reg7->randBb = $int;
         } elseif ($reg7->bb_calon_pasangan == "Berisi") {
-            $int = Random::generateInt(50, 75);
+            $int = Random::generateInt(51, 74);
             $reg7->randBb = $int;
         } elseif ($reg7->bb_calon_pasangan == "Gemuk") {
-            $int = Random::generateInt(70, 100);
+            $int = Random::generateInt(66, 100);
             $reg7->randBb = $int;
         }
         $reg7->status_calon_pasangan        = $request->status_calon_pasangan;

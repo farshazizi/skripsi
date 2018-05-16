@@ -1,7 +1,1 @@
-Warning !!! Segera Lakukan restock barang pada list barang dibawah ini.
-<?php 
-
-	// echo $_SESSION['NamaBrg'] : $_SESSION['JumlahBrg']; 
-	echo "test";
-
-?>
+Kami telah menemukan pasangan untuk Anda. Silahkan lakukan login kembali pada website qtaaruf

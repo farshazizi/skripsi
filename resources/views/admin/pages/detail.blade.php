@@ -16,6 +16,8 @@
 				</li>
 				<li class="breadcrumb-item active">Detail {{ $daf->nama_lengkap }}</li>
 			</ol>
+
+			{{-- div pencari --}}
 			<div class="card-body">
 			    <div class="table-responsive">
 			    	<div class="row">
@@ -63,30 +65,38 @@
 			                            <td></td>
 			                        </tr>
 			                        <tr>
+						      			<td><b>Tinggi badan</b></td>
+						      			<td></td>
+						      			<td>:</td>
+						      			<td>{{ $daf->tinggi_badan }} <b>cm</b></td>
+						      			<td></td>
+						      		</tr>
+						      		<tr>
+						      			<td><b>Berat badan</b></td>
+						      			<td></td>
+						      			<td>:</td>
+						      			<td>{{ $daf->berat_badan }} <b>cm</b></td>
+						      			<td></td>
+						      		</tr>
+			                        <tr>
+			                            <td><b>Penghasilan</b></td>
+			                            <td></td>
+			                            <td>:</td>
+			                            <td>Rp{{ $daf->penghasilan }}</td>
+			                            <td></td>
+			                        </tr>
+			                        <tr>
 			                            <td><b>Status pernikahan</b></td>
 			                            <td></td>
 			                            <td>:</td>
 			                            <td>{{ $daf->status_pernikahan }}</td>
 			                            <td></td>
-			                        </tr>
-			                        <tr>
-			                            <td><b>Alamat tempat tinggal saat ini</b></td>
-			                            <td></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->alamat_tinggal_saat_ini }}</td>
-			                            <td></td>
-			                        </tr>
-			                         <tr>
-			                            <td><b>No. Handphone</b></td>
-			                            <td></td>
-			                            <td>:</td>
-			                            <td>{{ $daf->handphone }}</td>
-			                            <td></td>
-			                        </tr>
+			                        </tr>			                        
 			                    </thead>
 			                </table>
 			    		</div>
-			    	</div> {{-- div tutup row --}}
+			    	</div>
+
 			    	<div class="row">
 			    		<div class="col">
 			    		</div>
@@ -108,24 +118,24 @@
 							      <div class="modal-body">
 							      	<table>
 							      		<tr>
-							      			<td><b>Nama lengkap</b></td>
+							      			<td><b>Suku Ayah</b></td>
 							      			<td>:</td>
-							      			<td>{{ $daf->nama_lengkap }}</td>
+							      			<td>{{ $daf->suku_ayah }}</td>
 							      		</tr>
 							      		<tr>
-							      			<td><b>Tinggi badan</b></td>
+							      			<td><b>Suku Ibu</b></td>
 							      			<td>:</td>
-							      			<td>{{ $daf->tinggi_badan }} <b>cm</b></td>
-							      		</tr>
-							      		<tr>
-							      			<td><b>Berat badan</b></td>
-							      			<td>:</td>
-							      			<td>{{ $daf->berat_badan }} <b>cm</b></td>
+							      			<td>{{ $daf->suku_ibu }}</td>
 							      		</tr>
 							      		<tr>
 							      			<td><b>Riwayat Kesehatan</b></td>
 							      			<td>:</td>
 							      			<td>{{ $daf->riwayat_kesehatan }}</td>
+							      		</tr>
+							      		<tr>
+							      			<td><b>Visi Pernikahan</b></td>
+							      			<td>:</td>
+							      			<td>{{ $daf->visi_pernikahan }}</td>
 							      		</tr>
 							      	</table>
 							      </div>
@@ -139,45 +149,122 @@
 							<!-- Close Modal -->
 			    		</div>
 			    	</div>
-			    	@foreach($name as $data)
+			    	{{-- div tutup pencari --}}
+
+			    	{{-- kirim email --}}
+			    	{{-- <button>Haiii</button> --}}
+			    	{{-- <form class="form-horizontal" method="POST" action="{{ route('match.postEmail') }}">
+					    {{ csrf_field() }}
+					    @foreach()
+					    <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+					        <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+
+					        <div class="col-md-6">
+					            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+
+					            @if ($errors->has('email'))
+					                <span class="help-block">
+					                    <strong>{{ $errors->first('email') }}</strong>
+					                </span>
+					            @endif
+					        </div>
+					    </div>
+
+					    <div class="form-group">
+					        <div class="col-md-6 col-md-offset-4">
+					            <button type="submit" class="btn btn-primary">
+					                Taarufkan
+					            </button>
+					        </div>
+					    </div>
+					</form> --}}
+			    	{{-- tutup kirim email --}}
+
 			    	<div class="row" style="margin-top: 2%">
+			    	@foreach($name as $data)
 			    		<div class="col-4">
 			    			<div class="card" style="width: 20rem;">
-								<img class="card-img-top" src="{{ asset('images/menikah.png') }}" alt="Card image cap" style="width:100%; height:auto;">
+								<div style="text-align: center;">
+								<img class="card-img-top" src="/images/foto_diri/{{ $data->foto_diri }}" alt="Card image cap" style="width:80%; height:auto; margin: 8px">
+								</div>
 								<div class="card-body">
 									<table>
 										<tr>
 											<td><b>Id user</b></td>
 											<td>:</td>
 											<td>{{ $data->id_user }}</td>
+											<td></td>
 										</tr>
 										<tr>
 											<td><b>Nama Lengkap</b></td>
 											<td>:</td>
 											<td>{{ $data->nama_lengkap }}</td>
+											<td></td>
 										</tr>
 										<tr>
 											<td><b>Usia</b></td>
 				                            <td>:</td>
-				                            <td>{{ $data->tanggal_lahir }} tahun</td>
+											<td>
+												<?php
+				                        		// Tanggal Lahir
+												$birthday = $data->tanggal_lahir;
+												
+												// Convert Ke Date Time
+												$biday = new DateTime($birthday);
+												$today = new DateTime();
+												
+												$diff = $today->diff($biday);
+												
+												// Display
+												//echo "Tanggal Lahir: ". date('d M Y', strtotime($birthday)) .'<br />';
+												echo $diff->y ;?> <b>tahun</b>
+											</td>
+				                            {{-- <td>{{ $data->usia }} tahun</today> --}}
 										</tr>
 										<tr>
-				                            <td><b>Domisili</b></td>
-				                            <td>:</td>
-				                            <td>{{ $data->alamat_tinggal_saat_ini }}</td>
-				                            <td></td>
+							      			<td><b>Tinggi badan</b></td>
+							      			<td>:</td>
+							      			<td>{{ $data->tinggi_badan }} <b>cm</b></td>
+							      			<td></td>
+							      		</tr>
+							      		<tr>
+							      			<td><b>Berat badan</b></td>
+							      			<td>:</td>
+							      			<td>{{ $data->berat_badan }} <b>kg</b></td>
+							      			<td></td>
+							      		</tr>
+				                        <tr>
+					                        <td><b>Penghasilan</b></td>
+					                        <td>:</td>
+					                        <td>Rp{{ $data->penghasilan }}</td>
+					                        <td></td>
 				                        </tr>
 				                        <tr>
-					                        <td><b>No. Handphone</b></td>
+					                        <td><b>No. Hp</b></td>
 					                        <td>:</td>
 					                        <td>{{ $data->handphone }}</td>
 					                        <td></td>
 				                        </tr>
+				                        <tr>
+					                        <td><b>Tingkat kecocokan</b></td>
+					                        <td>:</td>
+					                        <td>{{ $data->nilai }}%</td>
+					                        <td></td>
+				                        </tr>
 									</table>
 									<!-- Button Modal -->
+
 									<button type="button" class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#Matcher1" style="margin-top: 5%;">
-									View More
+										View More
 									</button>
+
+									<form method="POST" action="{{ route('match.postEmail') }}">
+										{{ csrf_field() }}
+							            <button type="submit" class="btn btn-primary btn-md btn-block" style="margin-top: 5%">
+							                Taarufkan
+							            </button>
+									</form>
+									
 									<!-- Modal -->
 									<div class="modal fade" id="Matcher1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 									  <div class="modal-dialog" role="document">
@@ -189,7 +276,28 @@
 									        </button>
 									      </div>
 									      <div class="modal-body">
-									        ...
+									      	<table>
+									      		<tr>
+									      			<td><b>Suku Ayah</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->suku_ayah }}</td>
+									      		</tr>
+									      		<tr>
+									      			<td><b>Suku Ibu</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->suku_ibu }}</td>
+									      		</tr>
+									      		<tr>
+									      			<td><b>Riwayat Kesehatan</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->riwayat_kesehatan }}</td>
+									      		</tr>
+									      		<tr>
+									      			<td><b>Visi Pernikahan</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->visi_pernikahan }}</td>
+									      		</tr>
+									      	</table>
 									      </div>
 									      <div class="modal-footer">
 									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -202,7 +310,8 @@
 								</div>
 							</div>	
 			    		</div>
-			    		@endforeach
+		    		@endforeach
+			    	</div>
 			    		
 			    	{{-- <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
 				        <thead>
@@ -212,7 +321,6 @@
 							<tr></tr>
 				        </tbody>
 			    	</table> --}}
-			    </div>
 			</div>
 			<div class="card-footer small text-muted">
 			</div>

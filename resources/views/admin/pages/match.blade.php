@@ -25,9 +25,10 @@
 	          </tr>
 	        </thead>
 	        <tbody>
+	        	<?php $i = 1; ?>
 				@foreach($daf as $daf)
 					<tr>
-						<th>{{ $daf->id }}</th>
+						<th>{{ $i++ }}</th>
 						<td><a href="/admin/match/{{ $daf->nama_lengkap }}">{{ $daf->nama_lengkap }}</a></td>
 						<td>
 							<?php
@@ -52,7 +53,6 @@
 						<td>{{ $daf->alamat_tinggal_saat_ini }}</td>
 						<td style="text-align: center;">
 							<button type="button" class="btn btn-sm btn-danger" disabled>Belum berpasangan</button>
-							{{-- <button type="button" class="btn btn-sm btn-success" disabled>Berpasangan</button> --}}
 						</td>
 						{{-- <td>{{ substr($post->body, 0, 50) }}{{ strlen($post->body) > 50 ? "..." : "" }}</td> --}}
 						{{-- <td>{{ $post->created_at }}</td> --}}
