@@ -11,10 +11,13 @@
 				{{-- <a href="/admin/match">Match</a> / {{ $daf->nama_lengkap}} --}}
 			</div>
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item">
+				{{-- <li class="breadcrumb-item">
 					<a href="/admin/match">Match</a>
 				</li>
-				<li class="breadcrumb-item active">Detail {{ $daf->nama_lengkap }}</li>
+				<li class="breadcrumb-item active">Detail {{ $daf->nama_lengkap }}</li> --}}
+				<a href="/admin/match">
+		        	<i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali
+		        </a>
 			</ol>
 
 			{{-- div pencari --}}
@@ -22,7 +25,7 @@
 			    <div class="table-responsive">
 			    	<div class="row">
 			    		<div class="col text-center">			    		
-							<img src="/images/foto_diri/{{ $daf->foto_diri }}" class="rounded-circle" style="width: 70%; height: auto">
+							<img src="/images/foto_diri/{{ $daf->foto_diri }}" style="width: 70%; height: auto; border-radius: 8px">
 			    		</div>
 			    		<div class="col-8">
 			    			<table>
@@ -118,6 +121,11 @@
 							      <div class="modal-body">
 							      	<table>
 							      		<tr>
+							      			<td><b>Visi Pernikahan</b></td>
+							      			<td>:</td>
+							      			<td>{{ $daf->visi_pernikahan }}</td>
+							      		</tr>
+							      		<tr>
 							      			<td><b>Suku Ayah</b></td>
 							      			<td>:</td>
 							      			<td>{{ $daf->suku_ayah }}</td>
@@ -133,9 +141,14 @@
 							      			<td>{{ $daf->riwayat_kesehatan }}</td>
 							      		</tr>
 							      		<tr>
-							      			<td><b>Visi Pernikahan</b></td>
+							      			<td><b>Pekerjaan</b></td>
 							      			<td>:</td>
-							      			<td>{{ $daf->visi_pernikahan }}</td>
+							      			<td>{{ $daf->pekerjaan }}</td>
+							      		</tr>
+							      		<tr>
+							      			<td><b>Pendidikan Terakhir</b></td>
+							      			<td>:</td>
+							      			<td>{{ $daf->pendidikan_terakhir }}</td>
 							      		</tr>
 							      	</table>
 							      </div>
@@ -181,11 +194,13 @@
 			    	{{-- tutup kirim email --}}
 
 			    	<div class="row" style="margin-top: 2%">
+			    	@if(count($name) > 0)
+			    	<?php $i=1; ?>
 			    	@foreach($name as $data)
 			    		<div class="col-4">
 			    			<div class="card" style="width: 20rem;">
 								<div style="text-align: center;">
-								<img class="card-img-top" src="/images/foto_diri/{{ $data->foto_diri }}" alt="Card image cap" style="width:80%; height:auto; margin: 8px">
+								<img src="/images/foto_diri/{{ $data->foto_diri }}" alt="Card image cap" style="width:80%; height:auto; margin: 8px; border-radius: 8px">
 								</div>
 								<div class="card-body">
 									<table>
@@ -252,21 +267,24 @@
 					                        <td></td>
 				                        </tr>
 									</table>
-									<!-- Button Modal -->
 
-									<button type="button" class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#Matcher1" style="margin-top: 5%;">
+									<!-- Button Modal -->
+									<button type="button" class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#Matcher1{{ $data->id_user }}" style="margin-top: 5%;">
 										View More
 									</button>
 
 									<form method="POST" action="{{ route('match.postEmail') }}">
 										{{ csrf_field() }}
+										<input hidden="" name="id_penerima" value="{{$data->id_user}}">
+										<input hidden="" name="id_pengirim" value="{{$daf->id_user}}">
+										<input hidden="" name="jenis_kelamin" value="{{$data->jenis_kelamin}}">
 							            <button type="submit" class="btn btn-primary btn-md btn-block" style="margin-top: 5%">
 							                Taarufkan
 							            </button>
 									</form>
 									
 									<!-- Modal -->
-									<div class="modal fade" id="Matcher1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal fade" id="Matcher1{{ $data->id_user }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 									  <div class="modal-dialog" role="document">
 									    <div class="modal-content">
 									      <div class="modal-header">
@@ -277,6 +295,11 @@
 									      </div>
 									      <div class="modal-body">
 									      	<table>
+									      		<tr>
+									      			<td><b>Visi Pernikahan</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->visi_pernikahan }}</td>
+									      		</tr>
 									      		<tr>
 									      			<td><b>Suku Ayah</b></td>
 									      			<td>:</td>
@@ -293,9 +316,14 @@
 									      			<td>{{ $data->riwayat_kesehatan }}</td>
 									      		</tr>
 									      		<tr>
-									      			<td><b>Visi Pernikahan</b></td>
+									      			<td><b>Pekerjaan</b></td>
 									      			<td>:</td>
-									      			<td>{{ $data->visi_pernikahan }}</td>
+									      			<td>{{ $data->pekerjaan }}</td>
+									      		</tr>
+									      		<tr>
+									      			<td><b>Pendidikan Terakhir</b></td>
+									      			<td>:</td>
+									      			<td>{{ $data->pendidikan_terakhir }}</td>
 									      		</tr>
 									      	</table>
 									      </div>
@@ -311,6 +339,11 @@
 							</div>	
 			    		</div>
 		    		@endforeach
+		    		@else
+		    		<div class="col-12">
+		    			<center><p>TIDAK ADA YANG COCOK</p></center>
+		    		</div>
+		    		@endif
 			    	</div>
 			    		
 			    	{{-- <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">

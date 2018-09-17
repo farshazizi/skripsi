@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="dashboard" transform="translate(0 0)">
+    <g id="Group_459" data-name="Group 459">
+      <g id="Group_458" data-name="Group 458">
+        <rect id="Rectangle_194" data-name="Rectangle 194" class="cls-1" width="8.889" height="6.667" transform="translate(11.111)"/>
+        <rect id="Rectangle_195" data-name="Rectangle 195" class="cls-1" width="8.889" height="11.111"/>
+        <rect id="Rectangle_196" data-name="Rectangle 196" class="cls-1" width="8.889" height="6.667" transform="translate(0 13.333)"/>
+        <rect id="Rectangle_197" data-name="Rectangle 197" class="cls-1" width="8.889" height="11.111" transform="translate(11.111 8.889)"/>
+      </g>
+    </g>
+  </g>
+</svg>

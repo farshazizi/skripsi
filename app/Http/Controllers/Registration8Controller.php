@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Registration1;
-use App\Registration8;
+// use App\Registration8;
 use Auth;
 use DB;
 
@@ -65,7 +65,8 @@ class Registration8Controller extends Controller
             return view('form.registration8')->with('jandu', $c);
         } elseif ($posisi == 9) {
             // return redirect('registration/8');
-            return view('form/waiting');
+            // return view('form/waiting');
+            return redirect()->route('calon-pasangan.index');
         }
     }
 
@@ -107,13 +108,13 @@ class Registration8Controller extends Controller
         // $reg8->akte_cerai   = $request->akte_cerai;
         if ($reg1->status_pernikahan == "") {
             $reg8->akte_cerai = "Tidak ada";
-        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah, tidak memiliki anak") {
+        } elseif ($reg1->status_pernikahan == "Pernah menikah, tidak memiliki anak") {
             $photo3 = $request->file('akte_cerai');
             $destination3 = base_path().'/public/images/akte_cerai';
             $filename3 = $photo3->getClientOriginalName();
             $photo3->move($destination3,$filename3);
             $reg8['akte_cerai'] = $filename3;
-        } elseif ($reg1->status_pernikahan == "Sudah pernah menikah dan memiliki anak") {
+        } elseif ($reg1->status_pernikahan == "Pernah menikah dan memiliki anak") {
             $photo3 = $request->file('akte_cerai');
             $destination3 = base_path().'/public/images/akte_cerai';
             $filename3 = $photo3->getClientOriginalName();
@@ -129,6 +130,7 @@ class Registration8Controller extends Controller
 
         $reg1 = Registration1::find($b[0]->id);
         $reg1->posisi = 9;
+        $reg1->status = 1;
         $reg1->save();
 
         $reg8->save();
@@ -144,7 +146,7 @@ class Registration8Controller extends Controller
         // redirect to another page
         // return redirect()->route('registration4.create', $reg4->id);
         // return redirect()->route('registration8.create', $data);
-        return view('form/waiting');
+        return redirect('/user/calon-pasangan');
     }
 
     /**

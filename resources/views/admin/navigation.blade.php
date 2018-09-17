@@ -1,32 +1,32 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-  <a class="navbar-brand" href="#">Start Bootstrap</a>
+  <a class="navbar-brand" href="#">Admin Dashboard</a>
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarResponsive">
     <ul class="navbar-nav navbar-sidenav">
-      <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Dashboard">
+      {{-- <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Dashboard">
         <a class="nav-link" href="/admin/dashboard">
           <i class="fa fa-fw fa-dashboard"></i>
           <span class="nav-link-text">
             Dashboard</span>
         </a>
-      </li>
-      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+      </li> --}}
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Uer">
         <a class="nav-link" href="/admin/user">
           <i class="fa fa-fw fa-area-chart"></i>
           <span class="nav-link-text">
             User</span>
         </a>
       </li>
-      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Match">
       <a class="nav-link" href="/admin/match">
           <i class="fa fa-fw fa-table"></i>
           <span class="nav-link-text">
             Match</span>
         </a>
-      </li>{{--
+      </li>{{-- 
       <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents">
           <i class="fa fa-fw fa-wrench"></i>
@@ -53,7 +53,7 @@
           <i class="fa fa-fw fa-sitemap"></i>
           <span class="nav-link-text">
             Menu Levels</span>
-        </a> --}}
+        </a>  --}}
         <ul class="sidenav-second-level collapse" id="collapseMulti">
           <li>
             <a href="#">Second Level Item</a>
@@ -83,7 +83,7 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="messagesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-fw fa-envelope"></i>
           <span class="d-lg-none">Messages
@@ -180,11 +180,24 @@
             </span>
           </div>
         </form>
-      </li>
+      </li> --}}
       <li class="nav-item">
-        <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+        {{-- <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
           <i class="fa fa-fw fa-sign-out"></i>
-          Logout</a>
+          Logout</a> --}}
+
+        <a href="{{ route('logout') }}"
+          onclick="event.preventDefault();
+          document.getElementById('logout-form').submit();"
+          class="nav-link nav-toggle">
+          <i class="icon-logout"></i>
+          <span class="title">Logout</span>
+          <span class="arrow"></span>
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            {{ csrf_field() }}
+        </form>
       </li>
     </ul>
   </div>

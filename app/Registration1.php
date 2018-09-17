@@ -13,6 +13,9 @@ class Registration1 extends Model
     public $fillable = [
         'id_user',
         'posisi',
+        'status',
+        'pemegang_form',
+        'validasi',
     	'nama_lengkap',
     	'tanggal_lahir',
         'usia',

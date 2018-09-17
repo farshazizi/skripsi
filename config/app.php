@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -231,7 +231,8 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Laratrust' => Laratrust\LaratrustFacade::class,
-        'Random' => Webcraft\Random\RandomFacade::class
+        'Random' => Webcraft\Random\RandomFacade::class,
+        'Input' => Illuminate\Support\Facades\Input::class
 
     ],
 

@@ -1,0 +1,1 @@
+Akun kamu sudah tervalidasi. Silahkan menunggu untuk mendapatkan calon pasangan taaruf kamu.

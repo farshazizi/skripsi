@@ -17,3 +17,5 @@
 
 <!-- Custom styles for this template -->
 <link href="{{ asset('admin/css/sb-admin.css') }}" rel="stylesheet">
+
+<link rel="icon" href="{{ asset('/images/icon.png') }}">

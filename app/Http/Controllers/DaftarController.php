@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use App\Daftar;
+use DB;
+use Mail;
 use Session;
 
 class DaftarController extends Controller
@@ -15,7 +18,18 @@ class DaftarController extends Controller
      */
     public function index()
     {
-        $daf = Daftar::orderby('id')->get(); 
+        // $daf = Daftar::orderby('id')->get(); 
+        $daf = DB::table('users')
+            ->join('registration1s', 'users.id', '=', 'registration1s.id_user')
+            // ->join('registration2s', 'users.id', '=', 'registration2s.id_user')
+            // ->join('registration3s', 'users.id', '=', 'registration3s.id_user')
+            // ->join('registration4s', 'users.id', '=', 'registration4s.id_user')
+            // ->join('registration7s', 'users.id', '=', 'registration7s.id_user')
+            ->join('registration8s', 'users.id', '=', 'registration8s.id_user')
+            // ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.*')
+            ->select('users.id', 'registration1s.*', 'registration8s.*')
+            ->get();
+        // return view('admin.pages.match', compact('daf'));
         return view('admin.pages.user', compact('daf'));
     }
 
@@ -77,8 +91,18 @@ class DaftarController extends Controller
      */
     public function show($id)
     {
-        $daf = Daftar::find($id);
-        return view('admin/user')->with('daf', $daf);
+        $detail = DB::table('users')
+            ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+            ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+            ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+            ->leftJoin('registration4s', 'users.id', '=', 'registration4s.id_user')
+            ->leftJoin('registration8s', 'users.id', '=', 'registration8s.id_user')
+            ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration8s.*')
+            ->where('registration1s.nama_lengkap', '=', $id)
+            ->get();
+
+        // dd($detail);
+        return view('admin.pages.user_detail', compact('detail'));
     }
 
     /**
@@ -101,7 +125,31 @@ class DaftarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (Input::get('validasi') == 'validasi') {
+            // dd("hai");
+            // dd($id);
+            $validasi = DB::table('registration1s')
+                ->where('id_user', '=', $id)
+                ->update(['validasi' => 2]);
+
+            Mail::send(['text'=>'validasi'],['name', 'Sarthak'], function($message)  {
+                $message->to('farshazizi22@gmail.com', 'Taaruf')->subject('Akun Sudah Tervalidasi');
+                $message->from('farshazizi22@gmail.com', 'Admin');
+            });
+        } elseif (Input::get('belum_validasi') == 'belum_validasi') {
+            // dd("hai2");
+            $validasi = DB::table('registration1s')
+                ->where('id_user', '=', $id)
+                ->update(['validasi' => 1]);
+
+
+            Mail::send(['text'=>'belum_validasi'],['name', 'Sarthak'], function($message)  {
+                $message->to('farshazizi22@gmail.com', 'Taaruf')->subject('Akun Belum Tervalidasi');
+                $message->from('farshazizi22@gmail.com', 'Admin');
+            });
+        }
+
+        return redirect()->route('user.index');
     }
 
     /**

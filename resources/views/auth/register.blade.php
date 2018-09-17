@@ -6,6 +6,7 @@
         <div class="login100-more" style="background-image: url('images/azi.jpg');"></div>
 
         <div class="wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50" style="background-image: url('images/ok.png');">
+            {{-- <form class="form-horizontal" method="POST" action="{{ route('register_user.store') }}"> --}}
             <form class="form-horizontal" method="POST" action="{{ route('register') }}">
                 {{ csrf_field() }}
 

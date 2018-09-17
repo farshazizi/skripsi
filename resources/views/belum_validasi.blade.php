@@ -1,0 +1,1 @@
+Akun kamu sudah belum tervalidasi. Silahkan lakukan login ke website qtaaruf dan perbaiki biodata diri kamu. Pastikan semua data sudah terisi dengan benar.

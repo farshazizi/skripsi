@@ -1,0 +1,1 @@
+Saat ini sedang berlangsung penukaran form di pihak laki-laki dan dengan berat hati pihak laki-laki menolak kamu.

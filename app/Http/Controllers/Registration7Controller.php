@@ -56,7 +56,7 @@ class Registration7Controller extends Controller
         } elseif ($posisi == 7) {
             // return redirect('registration/7');
             // return view('form/registration7');
-             $c = DB::table('registration1s')
+            $c = DB::table('registration1s')
             ->select('jenis_kelamin')
             ->where('id_user', '=', Auth::user()->id)->first();
             return view('form.registration7')->with('jekel', $c);

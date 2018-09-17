@@ -47,6 +47,8 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('/admin/dashboard', function () {
     return view('/admin/pages/dash');
 });
+// Route::resource('/admin/berpasangan', 'BerpasanganController');
+// Route::get('/admin/user', 'DaftarController@index')->name('admin.user');
 Route::resource('/admin/user', 'DaftarController');
 // Route::get('/admin/match', 'Registration1Controller@index');
 Route::resource('/admin/match', 'Registration1Controller');
@@ -58,15 +60,33 @@ Route::post('/admin/match', 'Registration1Controller@postEmail')->name('match.po
 // Route::get('/admin_detail', 'Registration1Controller@show');
 // END ADMIN
 
+// REGISTER
+// Route::resource('/home', 'Auth\RegisterUserController');
+Route::resource('/register_user', 'Auth\RegisterUserController'); //ini
+// Route::get('/rumah', 'Auth\RumahController@index')->name('rumah');
+// END REGISTER
+
 // USER
-Route::group(['middleware' => 'auth'], function() {
+// Route::group(['middleware' => 'auth'], function() {
 
 	// Route::auth();
 
-	// Route::get('home', function () {
+	// Route::get('/home', function () {
 	//     return view('home');
 	// });
+
+	// Route::get('/user/home', function () {
+	//     return view('rumah');
+	// });
 	Route::get('/home', 'HomeController@index')->name('home');
+	// Route::get('/home', 'HomeController@index')->name('home');
+	// Route::group(['middleware' => 'auth'], function() {
+	// });
+	// INI
+	// Route::get('/administrator', 'AdminController@index')->name('admin');
+	// Route::get('/admin/login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+	// Route::post('/admin/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+	// INI
 
 	// Route::group(['middleware' => ['web']], function() {
 
@@ -103,11 +123,22 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('/registration/8', ['as' => 'registration8', 'uses' => 'Registration8Controller@create']);
 	Route::post('/registration/8', 'Registration8Controller@store')->name('registration8.store');
 	// });
-	Route::get('wait', function () {
-	    return view('form/waiting');
+	Route::get('/wait', function () {
+	    return view('form.waiting');
 	});
 
-});
+// });
+
+Route::resource('/user/biodata-diri', 'BiodataDiriController');
+// Route::patch('/user/biodata-diri/{id_user}', 'BiodataDiriController@updateKtp')->name('biodata-diri.updateKtp');
+Route::resource('/user/calon-pasangan', 'CalonPasanganController');
+// Route::resource('/user/calon-pasangan', 'CalonLakiLakiController');
+// Route::resource('/user/calon-pasangan', 'CalonPerempuanController');
+// Route::get('/user/menunggu-matchmaking', function () {
+// 	    return view('user.pages.menunggu_matchmaking');
+// 	});
+Route::resource('/user/riwayat', 'RiwayatController');
+Route::resource('/user/ubah-kriteria', 'UbahKriteriaController');
 
 Auth::routes();
 // END USER

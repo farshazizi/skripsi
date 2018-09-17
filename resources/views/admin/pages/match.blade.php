@@ -28,8 +28,18 @@
 	        	<?php $i = 1; ?>
 				@foreach($daf as $daf)
 					<tr>
-						<th>{{ $i++ }}</th>
-						<td><a href="/admin/match/{{ $daf->nama_lengkap }}">{{ $daf->nama_lengkap }}</a></td>
+						<td>{{ $i++ }}</td>
+						<td>
+							@if($daf->status == 1 && $daf->validasi == 2 || $daf->status == 5 && $daf->validasi == 2)
+							<a href="/admin/match/{{ $daf->nama_lengkap }}">{{ $daf->nama_lengkap }}</a>
+							@endif
+							@if($daf->status == 2 || $daf->status == 3 || $daf->status == 4)
+							{{ $daf->nama_lengkap }}
+							@endif
+							@if($daf->status == 1 && $daf->validasi == 0 || $daf->status == 5 && $daf->validasi == 0)
+							{{ $daf->nama_lengkap }}
+							@endif
+						</td>
 						<td>
 							<?php
                         		// Tanggal Lahir
@@ -45,14 +55,21 @@
 								//echo "Tanggal Lahir: ". date('d M Y', strtotime($birthday)) .'<br />';
 								echo $diff->y ." tahun";
                         	?>
-							{{-- {{ $daf->tanggal_lahir }} --}}
 						</td>
 						<td>{{ $daf->jenis_kelamin }}</td>
 						{{-- <td>{{ $daf->suku }}</td> --}}
 						<td>{{ $daf->status_pernikahan }}</td>
 						<td>{{ $daf->alamat_tinggal_saat_ini }}</td>
 						<td style="text-align: center;">
-							<button type="button" class="btn btn-sm btn-danger" disabled>Belum berpasangan</button>
+							@if($daf->status == 1 || $daf->status == 5)
+							<button type="button" class="btn btn-sm btn-danger" disabled>Belum Berpasangan</button>
+							@endif
+							@if($daf->status == 2 || $daf->status == 3)
+							<button type="button" class="btn btn-sm btn-warning" style="color: #000000" disabled>Sedang Bertukar Form</button>
+							@endif
+							@if($daf->status == 4)
+							<button type="button" class="btn btn-sm btn-success" style="color: #ffffff" disabled>Sedang Bertaarufan</button>
+							@endif
 						</td>
 						{{-- <td>{{ substr($post->body, 0, 50) }}{{ strlen($post->body) > 50 ? "..." : "" }}</td> --}}
 						{{-- <td>{{ $post->created_at }}</td> --}}

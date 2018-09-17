@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-	<div class="limiter">
-        <div class="container-login100">
-            <div class="login100-more" style="background-image: url('images/bg-01.jpg'); width: 100%">
-				<div class="card mb-3" {{-- style="margin-top: 10%; margin-right: 20%; margin-left: 20%" --}} style="width: 40%; height: auto; margin-top: 10%; margin-left: 30%">
-					<img class="card-img-top" src="{{ asset('/images/back.jpg') }}" alt="Card image cap">
-					<div class="card-body">
-						<h5 class="card-title">Harap menunggu hasil matchmaking</h5>
-					</div>
-				</div>
-				{{-- <div class="card mb-3">
-				  <img class="card-img-top" src="{{ asset('/images/back.jpg') }}" alt="Card image cap">
-				  <div class="card-body">
-				    <h5 class="card-title">Card title</h5>
-				    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-				    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-				  </div>
-				</div> --}}
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="login100-more-home" style="background-image: url('{{ asset('images/latar_baru.jpg') }}'); width: 100%;">
+            <div class="card col-md-6 container" style="margin-top: 8%; border-radius: 8px">
+                <div class="card-body" style="padding-top: 8%">
+                    <img src="{{ asset('images/mencari.jpg') }}" style="margin-left: 43%; margin-bottom: 5%; width: 18%">
+                    <h3 style="color: #d86162; text-align: center;">Calon pasangan kamu sudah dekat</h3><br>
+                    <p style="margin-bottom: 5%; text-align: center; font-size: 16px">
+                        Calon pasangan kamu sedang kami proses, harap sabar menunggu atau kamu dapat menghubungi kami untuk info lebih lanjut.
+                    </p>
+                    {{-- <form>
+                        <a class="btn btn-md" style="color: white; margin-left: 40%; background-color: #d86162; width: 135px" href="{{ route('registration.store') }}" role="button">
+                            Mulai Taaruf
+                        </a>
+                    </form> --}}
+                </div>
             </div>
         </div>
     </div>
+</div>
 
 @endsection
-{{-- @include('partials/_javascript') --}}

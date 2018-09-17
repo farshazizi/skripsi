@@ -6,4 +6,5 @@ use Laratrust\LaratrustTeam;
 
 class Team extends LaratrustTeam
 {
+	//
 }

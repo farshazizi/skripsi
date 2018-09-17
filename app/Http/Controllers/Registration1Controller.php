@@ -1,16 +1,18 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Registration1;
 use App\Registration2;
 use App\Hasil;
+use App\Data_pasangan;
+use App\Pasangan_taaruf;
 use Session;
 use Auth;
 use DB;
 use DateTime;
 use Mail;
+// set_time_limit(0);
 
 class Registration1Controller extends Controller
 {
@@ -21,7 +23,17 @@ class Registration1Controller extends Controller
      */
     public function index()
     {
-        $daf = Registration1::orderby('id')->get(); 
+        // $daf = Registration1::orderby('id')->get(); 
+        $daf = DB::table('users')
+            ->join('registration1s', 'users.id', '=', 'registration1s.id_user')
+            ->join('registration2s', 'users.id', '=', 'registration2s.id_user')
+            ->join('registration3s', 'users.id', '=', 'registration3s.id_user')
+            ->join('registration4s', 'users.id', '=', 'registration4s.id_user')
+            ->join('registration7s', 'users.id', '=', 'registration7s.id_user')
+            ->join('registration8s', 'users.id', '=', 'registration8s.id_user')
+            ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.foto_diri')
+            ->orderby('users.id','DESC')
+            ->get();
         return view('admin.pages.match', compact('daf'));
     }
 
@@ -39,8 +51,8 @@ class Registration1Controller extends Controller
         // return view('form/registration1');
 
         $a = DB::table('registration1s')
-        ->select('posisi')
-        ->where('id_user', '=', Auth::user()->id)->get();
+            ->select('posisi')
+            ->where('id_user', '=', Auth::user()->id)->get();
 
         if ($a->isEmpty()){
             $posisi=1;
@@ -69,7 +81,8 @@ class Registration1Controller extends Controller
             return redirect()->route('registration8');
         } elseif ($posisi == 9) {
             // return redirect('registration/8');
-            return view('form/waiting');
+            // return view('form/waiting');
+            return redirect()->route('calon-pasangan.index');
         }
     }
 
@@ -97,11 +110,14 @@ class Registration1Controller extends Controller
             'alamat_tinggal_saat_ini'   => 'required'
         ));
 
-        // // store in the database
+        // store in the database
         $reg1 = new Registration1;
 
         $reg1->id_user                     = Auth::user()->id;
         $reg1->posisi                      = $request->posisi;
+        $reg1->status                      = $request->status;
+        $reg1->pemegang_form               = $request->pemegang_form;
+        $reg1->validasi                    = $request->validasi;
         $reg1->nama_lengkap                = Auth::user()->name;
         $reg1->tanggal_lahir               = $request->tanggal_lahir;
         $tgllahir = $request->tanggal_lahir;
@@ -126,16 +142,19 @@ class Registration1Controller extends Controller
             $reg1->i_jumlahAnak = 0;
         }
         $reg1->penghasilan                 = $request->penghasilan;
-        if ($reg1->penghasilan >= 500000 && $reg1->penghasilan <= 12000000) {
+        if ($reg1->penghasilan >= 500000 && $reg1->penghasilan <= 15000000) {
             $reg1->penghasilan             = $request->penghasilan;
         } elseif ($reg1->penghasilan < 500000) {
             $reg1->penghasilan = 500000;
-        } elseif ($reg1->penghasilan > 12000000) {
-            $reg1->penghasilan = 12000000;
+        } elseif ($reg1->penghasilan > 15000000) {
+            $reg1->penghasilan = 15000000;
         }
         $reg1->izin_menikah                = $request->izin_menikah;
         $reg1->alamat_tinggal_saat_ini     = $request->alamat_tinggal_saat_ini;
         $reg1->posisi = 2;
+        $reg1->status = 0;
+        $reg1->pemegang_form = 0;
+        $reg1->validasi = 0;
         
         $reg1->save();
 
@@ -163,6 +182,7 @@ class Registration1Controller extends Controller
      */
     public function show($id, Request $request)
     {
+
         // $reg1 = Registration1::find($id);
         // return view('form/registration1')->with('reg1', $reg1);
         // $daf = Registration1::where('id_user', '$id')->first(); 
@@ -180,7 +200,7 @@ class Registration1Controller extends Controller
             ->select('users.id', 'registration1s.*', 'registration2s.*', 'registration3s.*', 'registration4s.*', 'registration7s.*', 'registration8s.foto_diri')
             ->where('registration1s.nama_lengkap','=', $id)
             ->first();
-
+        // dd($daf);
         if ($request->hasFile('foto_diri')) {
             $img = Registration8::find($id);
             $path = base_path().'/public/images/foto_diri/'.$img->foto_diri;
@@ -195,12 +215,7 @@ class Registration1Controller extends Controller
             $photo->move($destination,$filename);
             $foto_diri['foto_diri'] = $filename;
         }
-
-        // $ngirimEmail = $daf->alamat_email;
-        // $this->postEmail($ngirimEmail);
-        // dd($ngirimEmail);
-        // $kEmail = $this->postEmail($ngirimEmail);
-
+        
         // variabel
         // $total_umur = $randUmur;
         // $total_tinggi_badan = $randTb;
@@ -247,85 +262,474 @@ class Registration1Controller extends Controller
         // dd($acuanUsia[0]->bb_usia);
 
         // filter suku
-        $confirm = "Iya";
-        if($confirm == "Iya") {
-            $calonPasangan1 = DB::table('users')
-                ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
-                ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
-                ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
-                ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
-                // ->where('users.id','=', '137')
-                // ->where('users.id','=', '101')
-                // ->where('users.id','=', '106')
-                ->where('users.id','=', '158')
-                // ->where('users.id','=', '181')
-                ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
-            $sukuAyah = $daf->suku_ayah;
-            $sukuIbu = $daf->suku_ibu;
-            $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
-                $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
-                ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
-            });
-
-            $bbAcuanUsia = $acuanUsia[0]->bb_usia;
-            $baAcuanUsia = $acuanUsia[0]->ba_usia;
-
-            $bbAcuanTb = $acuanTb[0]->bb_tb;
-            $baAcuanTb = $acuanTb[0]->ba_tb;
-
-            $bbAcuanBb = $acuanBb[0]->bb_bb;
-            $baAcuanBb = $acuanBb[0]->ba_bb;
-
-            $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
-            $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
-
-            $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
-                $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
-                ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
-                ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
-                ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
-            });
-
-            $calonPasangan = $calonPasangan1->get();
-        } else {
-            $calonPasangan1 = DB::table('users')
-                ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
-                ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
-                ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan')
-                ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
-                ->get();
-
-            $bbAcuanUsia = $acuanUsia[0]->bb_usia;
-            $baAcuanUsia = $acuanUsia[0]->ba_usia;
-
-            $bbAcuanTb = $acuanTb[0]->bb_tb;
-            $baAcuanTb = $acuanTb[0]->ba_tb;
-
-            $bbAcuanBb = $acuanBb[0]->bb_bb;
-            $baAcuanBb = $acuanBb[0]->ba_bb;
-
-            $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
-            $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
-
-            $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
-                $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
-                ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
-                ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
-                ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
-            });
-
-        // dd($calonPasangan1);
-            $calonPasangan = $calonPasangan1->get();
+        $confirm = $daf->suku_calon_pasangan;
+        $confirm2 = $daf->status_calon_pasangan;
+        // $confirm3 = $daf->merokok_calon_pasangan;
+        if ($daf->merokok_calon_pasangan == "Iya, tidak masalah"){
+            $confirm3 = array("Saya merokok", "Saya merokok namun berniat untuk berhenti", "Saya tidak merokok sama sekali");
+        } elseif ($daf->merokok_calon_pasangan == "Iya, asalkan berniat untuk berhenti"){
+            $confirm3 = array("Saya merokok", "Saya merokok namun berniat untuk berhenti", "Saya tidak merokok sama sekali");
+        } elseif ($daf->merokok_calon_pasangan == "Tidak, saya tidak suka perokok") {
+            $confirm3 = array("Saya tidak merokok sama sekali");
         }
+        // dd($confirm3);
+        $manggil_id = DB::table('registration1s')
+            ->select('id_user')
+            ->where('nama_lengkap', '=', $id)
+            ->first();
+            // dd($manggil_id->id_user);
+        $status_tolak = DB::table('data_pasangan')
+            ->select('status_tolak')
+            ->where('id_pengirim', '=', $manggil_id->id_user)
+            ->first();
+        // dd($status_tolak);
+        if (is_null($status_tolak)) {
+            // dd("hai");
+            // MASUK MENJADI SALAH SATU CALON PASANGAN
+            if($confirm == "Iya") {
+                // if ($confirm2 != "Belum pernah menikah") {
+                    // dd("hay1");
+                    // suku dan status\
+                    $calonPasangan1 = DB::table('users')
+                    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                    // ->where('users.id','=', '108')
+                    ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                    ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    ->where('registration1s.validasi', '=', 2)
+                    ->where('registration1s.status','=', 1)
+                    ->orWhere('registration1s.status','=', 5)
+                    ->whereIn('registration2s.merokok', $confirm3)
+                    // ->where('users.id','=', '137')
+                    // ->where('users.id','=', '101')
+                    // ->where('users.id','=', '106')
+                    // ->where('users.id','=', '158')
+                    // ->where('users.id','=', '176')
+                    // ->where('users.id','=', '181')
+                    // ->where('users.id','=', '187')
+                    // ->where('users.id','=', '192')
+                    // ->where('users.id','=', '14')
+                    // ->where('users.id','=', '79')
+                    // ->where('users.id','=', '89')
+                    // ->where('users.id','=', '36')
+                    // ->where('users.id','=', '189')
+                    // ->where('users.id','=', '49')
+                    ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                    $sukuAyah = $daf->suku_ayah;
+                    $sukuIbu = $daf->suku_ibu;
+                    $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
+                        $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
+                        ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
+                    });
+
+
+                    $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                    $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                    $bbAcuanTb = $acuanTb[0]->bb_tb;
+                    $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                    $bbAcuanBb = $acuanBb[0]->bb_bb;
+                    $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                    $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                    $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                    $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                        $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                        ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                        ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                        ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                    });
+
+                    $calonPasangan = $calonPasangan1->get();
+    // dd($calonPasangan);
+                // } else {
+                //     // dd("hay2");
+                //     $calonPasangan1 = DB::table('users')
+                //     ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                //     ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                //     ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                //     ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                //     // ->where('users.id','=', '137')
+                //     // ->where('users.id','=', '101')
+                //     // ->where('users.id','=', '106')
+                //     // ->where('users.id','=', '158')
+                //     // ->where('users.id','=', '176')
+                //     // ->where('users.id','=', '181')
+                //     // ->where('users.id','=', '187')
+                //     // ->where('users.id','=', '192')
+                //     // ->where('users.id','=', '14')
+                //     // ->where('users.id','=', '79')
+                //     // ->where('users.id','=', '89')
+                //     // ->where('users.id','=', '36')
+                //     // ->where('users.id','=', '189')
+                //     // ->where('users.id','=', '49')
+                //     // ->where('users.id','=', '51')
+                //     ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                //     $sukuAyah = $daf->suku_ayah;
+                //     $sukuIbu = $daf->suku_ibu;
+                //     $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
+                //         $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
+                //         ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
+                //     });
+                //     // dd($daf);
+                //     $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                //     $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                //     $bbAcuanTb = $acuanTb[0]->bb_tb;
+                //     $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                //     $bbAcuanBb = $acuanBb[0]->bb_bb;
+                //     $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                //     $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                //     $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                //     $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                //         $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                //         ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                //         ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                //         ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                //     });
+
+                //     $calonPasangan = $calonPasangan1->get();
+                // }
+                
+            } else {
+                // if ($confirm2 != "Belum Menikah") {
+                    //bukan suku dan sudah pernah menikah atau janda
+                    // dd("hay3");
+                $calonPasangan1 = DB::table('users')
+                    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                    ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                    ->whereIn('registration2s.merokok', $confirm3)
+                    ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    ->where('registration1s.validasi', '=', 2)
+                    ->where('registration1s.status','=', 1)
+                    ->orWhere('registration1s.status','=', 5)
+                    // ->where('users.id','=', '137')
+                    // ->where('users.id','=', '101')
+                    // ->where('users.id','=', '106')
+                    // ->where('users.id','=', '158')
+                    // ->where('users.id','=', '176')
+                    // ->where('users.id','=', '181')
+                    // ->where('users.id','=', '187')
+                    // ->where('users.id','=', '192')
+                    // ->where('users.id','=', '14')
+                    // ->where('users.id','=', '79')
+                    // ->where('users.id','=', '89')
+                    // ->where('users.id','=', '36')
+                    // ->where('users.id','=', '189')
+                    // ->where('users.id','=', '49')
+                    // ->where('users.id','=', '51')
+                    ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                    // $calonPasangan1 = DB::table('users')
+                        
+                    //     ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    //     ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    //     ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                        
+                    //     ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)                    
+                    //     ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    //     ->whereIn('registration2s.merokok', $confirm3)
+                    //     ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan');
+                        // dd($calonPasangan1);
+                    $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                    $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                    $bbAcuanTb = $acuanTb[0]->bb_tb;
+                    $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                    $bbAcuanBb = $acuanBb[0]->bb_bb;
+                    $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                    $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                    $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                      $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                        $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                        ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                        ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                        ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                    });
+
+                    $calonPasangan = $calonPasangan1->get();
+                    // dd($calonPasangan);
+                // } else {
+                //     // dd("hay4");
+                //     $calonPasangan1 = DB::table('users')
+                //         ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                //         ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                //         ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan')
+                //         ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                //         ->get();
+
+                //     $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                //     $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                //     $bbAcuanTb = $acuanTb[0]->bb_tb;
+                //     $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                //     $bbAcuanBb = $acuanBb[0]->bb_bb;
+                //     $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                //     $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                //     $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                //     $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                //         $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                //         ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                //         ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                //         ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                //     });
+
+                //     $calonPasangan = $calonPasangan1->get();
+                // }
+            }
+        } else {
+            // dd("hai2");
+            // TIDAK MASUK MENJADI SALAH SATU CALON PASANGAN
+            $tidak_masuk = DB::table('data_pasangan')
+                ->leftJoin('registration1s', 'data_pasangan.id_pengirim', '=', 'registration1s.id_user')
+                ->select('registration1s.id_user')
+                ->where('data_pasangan.status_tolak', '!=', 0)
+                ->where('data_pasangan.id_penerima', '=', $manggil_id->id_user)
+                ->first();
+            // dd($tidak_masuk);
+            if($confirm == "Iya") {
+                // if ($confirm2 != "Belum pernah menikah") {
+                    // dd("hay1");
+                    // suku dan status\
+                    $calonPasangan1 = DB::table('users')
+                    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                    ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                    ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    ->where('registration1s.validasi', '=', 2)
+                    ->where('registration1s.id_user', '!=', $tidak_masuk->id_user)
+                    ->where('registration1s.status','=', 1)
+                    // ->orWhere('registration1s.status','=', 5)
+                    ->whereIn('registration2s.merokok', $confirm3)
+                    // ->where('users.id','=', '137')
+                    // ->where('users.id','=', '101')
+                    // ->where('users.id','=', '106')
+                    // ->where('users.id','=', '158')
+                    // ->where('users.id','=', '176')
+                    // ->where('users.id','=', '181')
+                    // ->where('users.id','=', '187')
+                    // ->where('users.id','=', '192')
+                    // ->where('users.id','=', '14')
+                    // ->where('users.id','=', '79')
+                    // ->where('users.id','=', '89')
+                    // ->where('users.id','=', '36')
+                    // ->where('users.id','=', '189')
+                    // ->where('users.id','=', '49')
+                    // ->where('users.id','=', '108')
+                    ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                    $sukuAyah = $daf->suku_ayah;
+                    $sukuIbu = $daf->suku_ibu;
+                    $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
+                        $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
+                        ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
+                    });
+
+
+                    $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                    $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                    $bbAcuanTb = $acuanTb[0]->bb_tb;
+                    $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                    $bbAcuanBb = $acuanBb[0]->bb_bb;
+                    $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                    $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                    $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                    $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                        $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                        ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                        ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                        ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                    });
+
+                    $calonPasangan = $calonPasangan1->get();
+    // dd($calonPasangan);
+                // } else {
+                //     // dd("hay2");
+                //     $calonPasangan1 = DB::table('users')
+                //     ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                //     ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                //     ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                //     ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                //     // ->where('users.id','=', '137')
+                //     // ->where('users.id','=', '101')
+                //     // ->where('users.id','=', '106')
+                //     // ->where('users.id','=', '158')
+                //     // ->where('users.id','=', '176')
+                //     // ->where('users.id','=', '181')
+                //     // ->where('users.id','=', '187')
+                //     // ->where('users.id','=', '192')
+                //     // ->where('users.id','=', '14')
+                //     // ->where('users.id','=', '79')
+                //     // ->where('users.id','=', '89')
+                //     // ->where('users.id','=', '36')
+                //     // ->where('users.id','=', '189')
+                //     // ->where('users.id','=', '49')
+                //     // ->where('users.id','=', '51')
+                //     ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                //     $sukuAyah = $daf->suku_ayah;
+                //     $sukuIbu = $daf->suku_ibu;
+                //     $calonPasangan1->where(function ($query) use ($sukuAyah, $sukuIbu) {
+                //         $query->orWhere('registration3s.suku_ayah','=', $sukuAyah)
+                //         ->orWhere('registration3s.suku_ibu','=', $sukuIbu);
+                //     });
+                //     // dd($daf);
+                //     $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                //     $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                //     $bbAcuanTb = $acuanTb[0]->bb_tb;
+                //     $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                //     $bbAcuanBb = $acuanBb[0]->bb_bb;
+                //     $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                //     $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                //     $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                //     $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                //         $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                //         ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                //         ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                //         ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                //     });
+
+                //     $calonPasangan = $calonPasangan1->get();
+                // }
+                
+            } else {
+                // if ($confirm2 != "Belum Menikah") {
+                    //bukan suku dan sudah pernah menikah atau janda
+                    // dd("hay3");
+                $calonPasangan1 = DB::table('users')
+                    ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    ->leftJoin('registration3s', 'users.id', '=', 'registration3s.id_user')
+                    ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                    ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                    ->whereIn('registration2s.merokok', $confirm3)
+                    ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    ->where('registration1s.validasi', '=', 2)
+                    ->where('registration1s.id_user', '!=', $tidak_masuk->id_user)
+                    ->where('registration1s.status','=', 1)
+                    // ->orWhere('registration1s.status','=', 5)
+                    // ->where('users.id','=', '137')
+                    // ->where('users.id','=', '101')
+                    // ->where('users.id','=', '106')
+                    // ->where('users.id','=', '158')
+                    // ->where('users.id','=', '176')
+                    // ->where('users.id','=', '181')
+                    // ->where('users.id','=', '187')
+                    // ->where('users.id','=', '192')
+                    // ->where('users.id','=', '14')
+                    // ->where('users.id','=', '79')
+                    // ->where('users.id','=', '89')
+                    // ->where('users.id','=', '36')
+                    // ->where('users.id','=', '189')
+                    // ->where('users.id','=', '49')
+                    // ->where('users.id','=', '51')
+                    ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan, registration3s.suku_ayah, registration3s.suku_ibu');
+                    // $calonPasangan1 = DB::table('users')
+                        
+                    //     ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                    //     ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                    //     ->leftJoin('registration7s', 'users.id', '=', 'registration7s.id_user')
+                        
+                    //     ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)                    
+                    //     ->where('registration7s.status_calon_pasangan','=', $confirm2)
+                    //     ->whereIn('registration2s.merokok', $confirm3)
+                    //     ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan');
+                        // dd($calonPasangan1);
+                    $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                    $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                    $bbAcuanTb = $acuanTb[0]->bb_tb;
+                    $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                    $bbAcuanBb = $acuanBb[0]->bb_bb;
+                    $baAcuanBb = $acuanBb[0]->ba_bb;
+
+                    $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+                    $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+                      $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+                        $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+                        ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+                        ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+                        ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+                    });
+
+                    $calonPasangan = $calonPasangan1->get();
+                    // dd($calonPasangan);
+                // } else {
+                //     // dd("hay4");
+                //     $calonPasangan1 = DB::table('users')
+                //         ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
+                //         ->leftJoin('registration2s', 'users.id', '=', 'registration2s.id_user')
+                //         ->selectraw('users.id, registration1s.nama_lengkap, registration1s.tanggal_lahir, registration1s.jenis_kelamin, registration1s.usia, registration1s.penghasilan, registration2s.tinggi_badan, registration2s.berat_badan')
+                //         ->where('registration1s.jenis_kelamin','!=', $daf->jenis_kelamin)
+                //         ->get();
+
+                //     $bbAcuanUsia = $acuanUsia[0]->bb_usia;
+                //     $baAcuanUsia = $acuanUsia[0]->ba_usia;
+
+                //     $bbAcuanTb = $acuanTb[0]->bb_tb;
+                //     $baAcuanTb = $acuanTb[0]->ba_tb;
+
+                //     $bbAcuanBb = $acuanBb[0]->bb_bb;
+            //     $baAcuanBb = $acuanBb[0]->ba_bb;
+
+            //     $bbAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+            //     $baAcuanPenghasilan = $acuanPenghasilan[0]->bb_penghasilan;
+
+            //     $calonPasangan1->where(function ($query) use ($bbAcuanUsia, $baAcuanUsia, $bbAcuanTb, $baAcuanTb, $bbAcuanBb, $baAcuanBb, $bbAcuanPenghasilan, $baAcuanPenghasilan) {
+            //         $query->orWhereBetween('registration1s.usia', array($bbAcuanUsia, $baAcuanUsia))
+            //         ->orWhereBetween('registration2s.tinggi_badan', array($bbAcuanTb, $baAcuanTb))
+            //         ->orWhereBetween('registration2s.berat_badan', array($bbAcuanBb, $baAcuanBb))
+            //         ->orWhereBetween('registration1s.penghasilan', array($bbAcuanPenghasilan, $baAcuanPenghasilan));
+            //     });
+
+            //     $calonPasangan = $calonPasangan1->get();
+            // }
+        }
+        }
+
+        
+            // dd($calonPasangan);
+// dd($calonPasangan);
         // dd($a);
         // end filter suku
         // dd($calonPasangan);
         $jumlahdata = count($calonPasangan);
-        // dd($jumlahdata);
-
+        // dd($ekspektasiUsia.",".$ekspektasiTb.",".$ekspektasiBb.",".$ekspektasiPenghasilan);
+        // dd($calonPasangan);
+        $arrayCoba = array();
+        // $i=1;
         for($i = 0; $i < $jumlahdata; $i++) {
+            if(($calonPasangan[$i]->berat_badan - $daf->randBb) < 30){
+
+             
             $usiaCalon = $calonPasangan[$i]->usia;
             $tinggiCalon = $calonPasangan[$i]->tinggi_badan;
+
             $beratCalon = $calonPasangan[$i]->berat_badan;
             $penghasilanCalon = $calonPasangan[$i]->penghasilan;
             $arrayCalon = array($usiaCalon,$tinggiCalon,$beratCalon,$penghasilanCalon);
@@ -352,15 +756,16 @@ class Registration1Controller extends Controller
             // dd($sTb);
             // dd($sBb);
             // dd($sPenghasilan);
-            error_log("nilai umur di bentuk himpunan        :". $sUmur);
-            error_log("nilai tb di bentuk himpunan          :". $sTb);
-            error_log("nilai bb di bentuk himpunan          :". $sBb);
-            error_log("nilai penghasilan di bentuk himpunan :". $sPenghasilan);
+            error_log("nilai umur di bentuk himpunan keserasian umur        :". $sUmur);
+            error_log("nilai tb di bentuk himpunan keserasian tb            :". $sTb);
+            error_log("nilai bb di bentuk himpunan keserasian bb            :". $sBb);
+            error_log("nilai penghasilan di bentuk himpunan keserasian peng :". $sPenghasilan);
 
             $gUmur = $this->grupUmur($sUmur);
             $gTinggiBadan = $this->grupTinggiBadan($sTb);
             $gBeratBadan = $this->grupBeratBadan($sBb);
             $gPenghasilan = $this->grupPenghasilan($sPenghasilan);
+            // dd($gPenghasilan);
             $inference = $this->inference($gUmur, $gTinggiBadan, $gBeratBadan, $gPenghasilan);
             // $totalSkor = $gUmur + $gTinggiBadan + $gBeratBadan + $gPenghasilan;
             // $arrayHasil[$i] = array($calonPasangan[$i]->id => $inference);
@@ -369,16 +774,23 @@ class Registration1Controller extends Controller
             // dd($gBeratBadan);
             // dd($gPenghasilan);
             // dd($inference);
-            $has = new Hasil;
-            $has->id_pencari = $daf->id_user;
-            $has->id_calon = $calonPasangan[$i]->id;
-            $has->nilai = $inference;
-            $has->save();
+            // if($i == 17){
+            //     dd('JANCOK METUO');
+            // }
+                $has = new Hasil;
+                $has->id_pencari = $daf->id_user;
+                $has->id_calon = $calonPasangan[$i]->id;
+                $has->nilai = $inference;
+                $has->save();
+
+            // array_push($arrayCoba, [$daf->id_user, $calonPasangan[$i]->id,$inference]);
+           
             // dd($statusKecocokan);
             // dd($gPenghasilan);
             // dd($has);
+            }
         }
-
+        // dd($arrayCoba);
         $lolos = DB::table('hasil')
             ->join('users','users.id','hasil.id_calon')
             ->leftJoin('registration1s', 'users.id', '=', 'registration1s.id_user')
@@ -395,20 +807,20 @@ class Registration1Controller extends Controller
         // dd($lolos);
         $lolos = $lolos->toArray();
 
-        if ($request->hasFile('foto_diri')) {
-            $img = Registration8::find($id);
-            $path = base_path().'/public/images/foto_diri/'.$img->foto_diri;
+        // if ($request->hasFile('foto_diri')) {
+        //     $img = Registration8::find($id);
+        //     $path = base_path().'/public/images/foto_diri/'.$img->foto_diri;
             
-            if (file_exists($path)) {
-                unlink($path);
-            }
+        //     if (file_exists($path)) {
+        //         unlink($path);
+        //     }
             
-            $photo = $request->file('foto_diri');
-            $destination = base_path().'/public/images/foto_diri/';
-            $filename = $photo->getClientOriginalName();
-            $photo->move($destination,$filename);
-            $foto_diri['foto_diri'] = $filename;
-        }
+        //     $photo = $request->file('foto_diri');
+        //     $destination = base_path().'/public/images/foto_diri/';
+        //     $filename = $photo->getClientOriginalName();
+        //     $photo->move($destination,$filename);
+        //     $foto_diri['foto_diri'] = $filename;
+        // }
 
         $hapusHasil = DB::table('hasil')
             ->where('hasil.id_pencari', '=', $daf->id_user)
@@ -490,13 +902,88 @@ class Registration1Controller extends Controller
 
     // kirim email
     public function postEmail(Request $request) {
-        Mail::send(['text'=>'mail'],['name', 'Sarthak'], function($message) {
-            $message->to('farshazizi22@gmail.com', 'Taaruf')->subject('Ada yang ingin bertaaruf dengan Anda');
-            $message->from('qtaaruf.indonesia@gmail.com', 'Admin');
+        // dd($request->id_penerima);
+        // klik taarufkan = laki2
+        if ($request->jenis_kelamin == "Laki-laki") {
+            // dd("Hai1");
+            $penerima = DB::table('users')
+                ->select('email')
+                ->where('id','=',$request->id_pengirim)->first();
+
+            $pengirim = DB::table('users')
+                ->select('email')
+                ->where('id','=',$request->id_penerima)->first();
+
+            // laki-laki
+            $status_penerima = DB::table('registration1s')
+                ->where('id_user', '=', $request->id_penerima)
+                ->update(['status' => 2, 'pemegang_form' => 1]);
+
+            // perempuan
+            $status_pengirim = DB::table('registration1s')
+                ->where('id_user', '=', $request->id_pengirim)
+                ->update(['status' => 2]);
+            
+            // dd($penerima->email);
+            // dd($pengirim->email);
+        } elseif ($request->jenis_kelamin == "Perempuan") {
+            // dd("Hai2");
+            $penerima = DB::table('users')
+                ->select('email')
+                ->where('id','=',$request->id_penerima)->first();
+
+            $pengirim = DB::table('users')
+                ->select('email')
+                ->where('id','=',$request->id_pengirim)->first();
+
+            // perempuan
+            $status_penerima = DB::table('registration1s')
+                ->where('id_user', '=', $request->id_penerima)
+                ->update(['status' => 2]);
+
+            // laki-laki
+            $status_pengirim = DB::table('registration1s')
+                ->where('id_user', '=', $request->id_pengirim)
+                ->update(['status' => 2, 'pemegang_form' => 1]);
+        }
+
+        // $penerima = DB::table('users')
+        //     ->select('email')
+        //     ->where('id','=',$request->id_penerima)->first();
+        // $pengirim = DB::table('users')
+        //     ->select('email')
+        //     ->where('id','=',$request->id_pengirim)->first();
+
+        Mail::send(['text'=>'mail'],['name', 'Sarthak'], function($message)  {
+            $message->to('farshazizi22@gmail.com', 'Taaruf')->subject('Ada yang ingin bertaaruf dengan kamu');
+            $message->from('farshazizi22@gmail.com', 'Admin');
         });
 
-        $daf = Registration1::orderby('id')->get();
-        return view('admin.pages.match', compact('daf'));
+        // $reg1 = Registration1::find($id);
+        // $reg1->status = 2;
+        // $reg1->save();
+
+        $data_pas1 = new Data_pasangan;
+        $data_pas2 = new Data_pasangan;
+
+        $data_pas1->id_pengirim  = $request->id_pengirim;
+        $data_pas1->id_penerima  = $request->id_penerima;
+        $data_pas1->status_tolak = 0;
+        $data_pas1->save();
+
+        $data_pas2->id_pengirim  = $request->id_penerima;
+        $data_pas2->id_penerima  = $request->id_pengirim;
+        $data_pas2->status_tolak = 0;
+        $data_pas2->save();
+
+        // $pas_taaruf = new Pasangan_taaruf;
+        // $pas_taaruf->id_pasangan1   = $request->id_pengirim;
+        // $pas_taaruf->id_pasangan2   = $request->id_penerima;
+        // $pas_taaruf->status_hold    = 1;
+        // $pas_taaruf->save();
+
+        // return view('admin.pages.match');
+        return redirect('/admin/match');
     }
 
     public function serasiUmur($ekspetasi_usia, $s_total_usia) {
@@ -516,18 +1003,11 @@ class Registration1Controller extends Controller
 
     public function serasiPenghasilan($ekspetasi_penghasilan, $s_total_penghasilan) {
         $n_serasi_penghasilan = (abs($ekspetasi_penghasilan - $s_total_penghasilan) / 14500000) * 100;
-        // dd($n_serasi_penghasilan);
         return $n_serasi_penghasilan;
     }
 
     // function aplikasi fungsi implikasi
     public function grupUmur($total_umur) {
-        //himpunan turun
-        // if ($total_umur>=18 && $total_umur<=27) {
-        //     $a = (27-$total_umur)/(27-18);
-        // } elseif ($total_umur>=29) {
-        //     $a = 0;
-        // }
         if ($total_umur<=30) {
             $a = 1;
         } elseif ($total_umur>=30 && $total_umur<=70) {
@@ -535,16 +1015,7 @@ class Registration1Controller extends Controller
         } elseif ($total_umur>=70) {
             $a = 0;
         }
-        // dd($a);
 
-        //himpunan segitiga
-        // if ($total_umur<=23 || $total_umur>=33) {
-        //     $b = 0;
-        // } elseif ($total_umur>=23 && $total_umur<=28) {
-        //     $b = ($total_umur-23)/(28-23);
-        // } elseif ($total_umur>=28 && $total_umur<=33) {
-        //     $b = (33-$total_umur)/(33-28);
-        // }
         if ($total_umur<=30 || $total_umur>=90) {
             $b = 0;
         } elseif ($total_umur>=30 && $total_umur<=70) {
@@ -553,14 +1024,6 @@ class Registration1Controller extends Controller
             $b = (90-$total_umur)/(90-70);
         }
 
-        //himpunan naik
-        // if ($total_umur<=28) {
-        //     $c = 0;
-        // } elseif ($total_umur>=28 && $total_umur<=35) {
-        //     $c = ($total_umur-28)/(35-28);
-        // } elseif ($total_umur>=35) {
-        //     $c = 1;
-        // }
         if ($total_umur<=70) {
             $c = 0;
         } elseif ($total_umur>=70 && $total_umur<=90) {
@@ -570,17 +1033,10 @@ class Registration1Controller extends Controller
         }
 
         $mfuzzy = [$a, $b, $c];
-        // dd($mfuzzy);
         return $mfuzzy;
     }
 
     public function grupTinggiBadan($total_tinggi_badan) {
-        //himpunan turun
-        // if ($total_tinggi_badan>=50 && $total_tinggi_badan<=168) {
-        //     $a = (168-$total_tinggi_badan)/(168-50);
-        // } elseif ($total_tinggi_badan>=168) {
-        //     $a = 0;
-        // }
         if ($total_tinggi_badan<=10) {
             $a = 1;
         } elseif ($total_tinggi_badan>=10 && $total_tinggi_badan<=50) {
@@ -589,14 +1045,6 @@ class Registration1Controller extends Controller
             $a = 0;
         }
 
-        //himpunan segitiga
-        // if ($total_tinggi_badan<=160 || $total_tinggi_badan>=175) {
-        //     $b = 0;
-        // } elseif ($total_tinggi_badan>=160 && $total_tinggi_badan<=168) {
-        //     $b = ($total_tinggi_badan-160)/(168-160);
-        // } elseif ($total_tinggi_badan>=168 && $total_tinggi_badan<=175) {
-        //     $b = (175-$total_tinggi_badan)/(175-168);
-        // }
         if ($total_tinggi_badan<=10 || $total_tinggi_badan>=70) {
             $b = 0;
         } elseif ($total_tinggi_badan>=10 && $total_tinggi_badan<=50) {
@@ -605,14 +1053,6 @@ class Registration1Controller extends Controller
             $b = (70-$total_tinggi_badan)/(70-50);
         }
 
-        //himpunan naik
-        // if ($total_tinggi_badan<=168) {
-        //     $c = 0;
-        // } elseif ($total_tinggi_badan>=168 && $total_tinggi_badan<=200) {
-        //     $c = ($total_tinggi_badan-168)/(200-168);
-        // } elseif ($total_tinggi_badan>=200) {
-        //     $c = 1;
-        // }
         if ($total_tinggi_badan<=50) {
             $c = 0;
         } elseif ($total_tinggi_badan>=50 && $total_tinggi_badan<=70) {
@@ -626,12 +1066,6 @@ class Registration1Controller extends Controller
     }
 
     public function grupBeratBadan($total_berat_badan) {
-        //himpunan turun
-        // if ($total_berat_badan>=40 && $total_berat_badan<=63) {
-        //     $a = (63-$total_berat_badan)/(63-40);
-        // } elseif ($total_berat_badan>=63) {
-        //     $a = 0;
-        // }
         if ($total_berat_badan<=30) {
             $a = 1;
         } elseif ($total_berat_badan>=30 && $total_berat_badan<=50) {
@@ -640,14 +1074,6 @@ class Registration1Controller extends Controller
             $a = 0;
         }
 
-        //himpunan segitiga
-        // if ($total_berat_badan<=50 || $total_berat_badan>=75) {
-        //     $b = 0;
-        // } elseif ($total_berat_badan>=50 && $total_berat_badan<=63) {
-        //     $b = ($total_berat_badan-50)/(63-50);
-        // } elseif ($total_berat_badan>=63 && $total_berat_badan<=75) {
-        //     $b = (75-$total_berat_badan)/(75-63);
-        // }
         if ($total_berat_badan<=30 || $total_berat_badan>=80) {
             $b = 0;
         } elseif ($total_berat_badan>=30 && $total_berat_badan<=50) {
@@ -656,14 +1082,6 @@ class Registration1Controller extends Controller
             $b = (80-$total_berat_badan)/(80-50);
         }
 
-        //himpunan naik
-        // if ($total_berat_badan<=63) {
-        //     $c = 0;
-        // } elseif ($total_berat_badan>=63 && $total_berat_badan<=100) {
-        //     $c = ($total_berat_badan-63)/(100-63);
-        // } elseif ($total_berat_badan>=100) {
-        //     $c = 1;
-        // }
         if ($total_berat_badan<=50) {
             $c = 0;
         } elseif ($total_berat_badan>=50 && $total_berat_badan<=80) {
@@ -677,12 +1095,6 @@ class Registration1Controller extends Controller
     }
 
     public function grupPenghasilan($total_penghasilan) {
-        //himpunan turun
-        // if ($total_penghasilan>=500000 && $total_penghasilan<=5000000) {
-        //     $a = (5000000-$total_penghasilan)/(5000000-500000);
-        // } elseif ($total_penghasilan>=5000000) {
-        //     $a = 0;
-        // }
         if ($total_penghasilan<=30) {
             $a = 1;
         } elseif ($total_penghasilan>=30 && $total_penghasilan<=50) {
@@ -691,14 +1103,6 @@ class Registration1Controller extends Controller
             $a = 0;
         }
 
-        //himpunan segitiga
-        // if ($total_penghasilan<=3500000 || $total_penghasilan>=8000000) {
-        //     $b = 0;
-        // } elseif ($total_penghasilan>=3500000 && $total_penghasilan<=5000000) {
-        //     $b = ($total_penghasilan-3500000)/(5000000-3500000);
-        // } elseif ($total_penghasilan>=5000000 && $total_penghasilan<=8000000) {
-        //     $b = (8000000-$total_penghasilan)/(8000000-5000000);
-        // }
         if ($total_penghasilan<=30 || $total_penghasilan>=70) {
             $b = 0;
         } elseif ($total_penghasilan>=30 && $total_penghasilan<=50) {
@@ -707,14 +1111,6 @@ class Registration1Controller extends Controller
             $b = (70-$total_penghasilan)/(70-50);
         }
 
-        //himpunan naik
-        // if ($total_penghasilan<=5000000) {
-        //     $c = 0;
-        // } elseif ($total_penghasilan>=5000000 && $total_penghasilan<=12000000) {
-        //     $c = ($total_penghasilan-5000000)/(12000000-5000000);
-        // } elseif ($total_penghasilan>=12000000) {
-        //     $c = 1;
-        // }
         if ($total_penghasilan<=50) {
             $c = 0;
         } elseif ($total_penghasilan>=50 && $total_penghasilan<=70) {
@@ -730,114 +1126,6 @@ class Registration1Controller extends Controller
     // aplikasi fungsi implikasi if ... then ... dan alfa-predikat
     public function inference($imp_umur, $imp_tb, $imp_bb, $imp_penghasilan) {
         $rules = array(81);
-
-        // $rules[0] = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[1] = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[2] = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[3] = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[4] = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[5] = min($imp_umur[2], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[6] = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[7] = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[8] = min($imp_umur[2], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[9] = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[10] = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[11] = min($imp_umur[2], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[12] = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[13] = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[14] = min($imp_umur[2], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[15] = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[16] = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[17] = min($imp_umur[2], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[18] = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[19] = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[20] = min($imp_umur[2], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[21] = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[22] = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[23] = min($imp_umur[2], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[24] = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[25] = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[26] = min($imp_umur[2], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[27] = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[28] = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[29] = min($imp_umur[1], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[30] = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[31] = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[32] = min($imp_umur[1], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[33] = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[34] = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[35] = min($imp_umur[1], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[36] = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[37] = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[38] = min($imp_umur[1], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[39] = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[40] = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[41] = min($imp_umur[1], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[42] = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[43] = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[44] = min($imp_umur[1], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[45] = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[46] = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[47] = min($imp_umur[1], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[48] = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[49] = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[50] = min($imp_umur[1], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[51] = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[52] = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[53] = min($imp_umur[1], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[54] = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[55] = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[56] = min($imp_umur[0], $imp_tb[2], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[57] = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[58] = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[59] = min($imp_umur[0], $imp_tb[2], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[60] = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[61] = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[62] = min($imp_umur[0], $imp_tb[2], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[63] = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[64] = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[65] = min($imp_umur[0], $imp_tb[1], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[66] = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[67] = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[68] = min($imp_umur[0], $imp_tb[1], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[69] = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[70] = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[71] = min($imp_umur[0], $imp_tb[1], $imp_bb[0], $imp_penghasilan[2]);
-
-        // $rules[72] = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[0]);
-        // $rules[73] = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[1]);
-        // $rules[74] = min($imp_umur[0], $imp_tb[0], $imp_bb[2], $imp_penghasilan[2]);
-
-        // $rules[75] = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[0]);
-        // $rules[76] = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[1]);
-        // $rules[77] = min($imp_umur[0], $imp_tb[0], $imp_bb[1], $imp_penghasilan[2]);
-
-        // $rules[78] = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[0]);
-        // $rules[79] = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[1]);
-        // $rules[80] = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
 
         // tidak cocok
         $rules[0] = min($imp_umur[2], $imp_tb[2], $imp_bb[2], $imp_penghasilan[0]);
@@ -944,11 +1232,18 @@ class Registration1Controller extends Controller
         $rules[80] = min($imp_umur[0], $imp_tb[0], $imp_bb[0], $imp_penghasilan[2]);
 
         // dd($rules);
+        // error_log("nilai y di setiap rules: ". $rules);
         $nilaiTidakCocok = 0;
         $nilaiKurangCocok = 0;
         $nilaiCukupCocok = 0;
         $nilaiCocok = 0;
         $nilaiSangatCocok = 0;
+
+        // $nilaiTidakCocokArray = array();
+        // $nilaiKurangCocokArray = array();
+        // $nilaiCukupCocokArray = array();
+        // $nilaiCocokArray = array();
+        // $nilaiSangatCocokArray = array();
 
         $nilaiY1 = array();
         $jumDat = count($rules);
@@ -972,10 +1267,23 @@ class Registration1Controller extends Controller
                 $nilaiSangatCocok = $rules[$i];
             }
         }
+        // $nilaiTidakCocok  = max($nilaiTidakCocokArray);
+        // $nilaiKurangCocok = max($nilaiKurangCocokArray);
+        // $nilaiCukupCocok  = max($nilaiCukupCocokArray);
+        // $nilaiCocok       = max($nilaiCocokArray);
+        // $nilaiSangatCocok = max($nilaiSangatCocokArray);
+        // dd($nilaiCukupCocok);
+        // dd($nilaiCocok);
         // dd($nilaiSangatCocok);
+        // error_log("tidak cocok  : ". $nilaiTidakCocok);
+        // error_log("kurang cocok : ". $nilaiKurangCocok);
+        // error_log("cukup cocok  : ". $nilaiCukupCocok);
+        // error_log("cocok        : ". $nilaiCocok);
+        // error_log("sangat cocok : ". $nilaiSangatCocok);
 
         $nilaiY = array();
-        $nilaiY = $nilaiY1;
+        $nilaiY = array_unique($nilaiY1);
+        // $nilaiY = max($nilaiY1);
         // dd($nilaiY);
         $test = array();
         foreach ($nilaiY as $key => $value) {
@@ -1005,8 +1313,8 @@ class Registration1Controller extends Controller
 
         $sampelX = array();
         $rangeArea = $batasAtas - $batasBawah;
-        error_log("batas bawah x : ". $batasBawah);
-        error_log("batas atas x  : ". $batasAtas);
+        // error_log("batas bawah x : ". $batasBawah);
+        // error_log("batas atas x  : ". $batasAtas);
         // dd($rangeArea);
         $tampung = 0;
         for ($i=0; $i < $rangeArea; $i++) { 
@@ -1026,17 +1334,39 @@ class Registration1Controller extends Controller
                     $hasil = ($i-15)/(25-15);
                 } elseif ($nilaiTidakCocok != 0 && $nilaiKurangCocok != 0 && $nilaiTidakCocok > $nilaiKurangCocok) {
                     $hasil = (25-$i)/(25-15);
+                } elseif ($nilaiTidakCocok != 0 && $nilaiKurangCocok == 0) {
+                    if ($i <= 20) {
+                        $hasil = $nilaiCocok;
+                    } else {
+                        $hasil = (25-$i)/(25-15);
+                    }
+                } elseif ($nilaiTidakCocok == 0 && $nilaiKurangCocok != 0) {
+                    if ($hasil == 0) {
+                        $hasil = ($i-15)/(25-15);
+                    } else {
+                        $hasil = $nilaiKurangCocok; 
+                    }
                 }
             }
             if ($i >= 25 && $i <= 30) {
                 $hasil = $nilaiKurangCocok;
             }
-            if ($i >= 31 && $i <= 45) {
-                if ($nilaiKurangCocok != 0 && $ilaiCukupCocok != 0 && $nilaiKurangCocok < $nilaiCukupCocok) {
-                    $hasil = ($i-30)/(45-30);
+            if ($i >= 31 && $i <= 44) {
+                if ($nilaiKurangCocok != 0 && $nilaiCukupCocok != 0 && $nilaiKurangCocok < $nilaiCukupCocok) {
+                    if ($i = 37.5) {
+                        $hasil = $nilaiKurangCocok;
+                    } else {
+                        $hasil = ($i-30)/(45-30);
+                    }
                 } elseif ($nilaiKurangCocok != 0 && $nilaiCukupCocok != 0 && $nilaiKurangCocok > $nilaiCukupCocok) {
                     $hasil = (45-$i)/(45-30);
-                } else {
+                } elseif ($nilaiKurangCocok != 0 && $nilaiCukupCocok == 0) {
+                    if($hasil <= 37.5) {
+                        $hasil = $nilaiKurangCocok;
+                    } else {
+                        $hasil = (45-$i)/(45-30);
+                    }
+                } elseif ($nilaiKurangCocok == 0 && $nilaiCukupCocok != 0) {
                     if($hasil == 0) {
                         $hasil = ($i-30)/(45-30);
                     } else {
@@ -1079,7 +1409,7 @@ class Registration1Controller extends Controller
                 } elseif ($nilaiCocok != 0 && $nilaiSangatCocok != 0 && $nilaiCocok > $nilaiSangatCocok) {
                     $hasil = (85-$i)/(85-75);
                 } elseif ($nilaiCocok != 0 && $nilaiSangatCocok == 0) {
-                    if ($i<= 80) {
+                    if ($i <= 80) {
                         $hasil = $nilaiCocok;
                     } else {
                         $hasil = (85-$i)/(85-75);
@@ -1095,110 +1425,24 @@ class Registration1Controller extends Controller
             if ($i >= 85 && $i <= 100) {
                 $hasil = $nilaiSangatCocok;
             }
-            array_push($sampelY, $hasil) ;
-       }
-       // dd($sampelY);
+            array_push($sampelY, $hasil);
+            // ini_set('memory_limit', '-1');
+            // ini_set('memory_limit', '160M');
+
+        }
+        // dd($sampelY);
+
        $hasilKali = array();
        for ($i=0; $i < $rangeArea; $i++) { 
            $hasilKali[$i] = $sampelX[$i] * $sampelY[$i];
        }
-       // dd(array_sum($hasilKali1));
+       
        $pembagiAtas = array_sum($hasilKali);
        $pembagiBawah = array_sum($sampelY);
+       // dd("ini pembagi atas ". $pembagiAtas);
+       // dd("ini pembagi bawah ". $pembagiBawah);
        $z = $pembagiAtas/$pembagiBawah;
        // dd($z);
-
-            // // komposisi aturan
-            // $y = array_values($nilaiY); //membuat index dimulai dari angka 0
-            // sort($y);
-            // // dd($y);
-
-            // $x = array();
-            // $jumDat2 = count($y);
-            // // dd($jumDat2);
-            // for ($j=0; $j < $jumDat2; $j++) {
-            //     $x[$j] = number_format((($y[$j]*70) + 15), 2);
-            // }
-            // $jumlahY = count($y);
-            // sort($x);
-            // // dd($jumlahY);
-            // // dd($x);
-
-            // //defuzzifikasi
-            // $sampelTerbesar = (int) round(max($x));
-            // // dd($sampelTerbesar);
-            // // $banyakSampel = array();
-            // $banyakSampel = array();
-            // $sampelZ = 0;
-            // $sampelZ1 = 0;
-            // $areaZ = 0;
-            // // $areaZ1 = 0;
-            // $miuY1 = 0;
-            // $batas = 0;
-            // $batasY = 0;
-            // $i = 0;
-            // $j = 0;
-            // for ($m=0; $m < $jumlahY; $m++) {
-            //     $batas = $x[$m];
-            //     // dd($batas);
-            //     $batasY = $y[$m];
-            //     // dd($batasY);
-            //     // for ($i=0; $i < $batas; $i++) {
-            //     //     $banyakSampel[$i] = $i + 1;
-            //     //     if ($banyakSampel[$i] < $batas) {
-            //     //         // dd($y[$i]);
-            //     //         $sampelZ = $sampelZ + ($banyakSampel[$i] * $batasY);
-            //     //         // $sampelZ = $banyakSampel[$i];
-            //     //     }
-            //     // }
-            //     $test = "";
-            //     while ($i <= $batas-1) {
-            //         $banyakSampel[$i] = $i + 1;
-            //         if ($banyakSampel[$i] <= $batas) {
-            //             $sampelZ = $sampelZ + ($banyakSampel[$i] * $batasY); // rumus 1
-            //         } elseif ($banyakSampel[$i] >= $batas) {
-            //             $sampelZ = $sampelZ + (($banyakSampel[$i]*70) + 15); // rumus 2
-            //             $test = "hai";
-            //             // dd($test);
-            //         }
-            //         $i++;
-            //     }
-            //     error_log("nilai sampel: ". $sampelZ);
-            //     error_log("kamu ". $test);
-            //     // error_log("batas x: ". $batas);
-            //     // dd($sampelZ);
-            //     while ($j <= $batas-1) {
-            //         $miuY1 = $miuY1 + $batasY;
-            //         $j++;
-            //     }
-            //     error_log("hasil bagi: ". $miuY1);
-            //     // for ($j=0; $j < $batas-1; $j++) { 
-            //     //     // $batasY1 = $batasY + 1;
-            //     //     $miuY1 = $miuY1 + ($batasY);
-            //     // }
-            //     // dd($banyakSampel);
-            //     // dd($miuY1);
-            //     // $areaZ = $areaZ + $sampelZ;
-            //     // $areaZ = $sampelZ;
-            //     // dd($areaZ);
-
-            //     //menghitung untuk mendapatkan nilai hasil bagi
-            //     // for ($i=0; $i < $jumlahY; $i++) {
-            //     //     $miuY1 = $miuY1 + $y[$i];
-            //     // }
-            //     //tutup menghitung untuk mendapatkan nilai hasil bagi
-            // }
-            // // dd($sampelZ);
-            // $miuY = 0;
-            // $miuY = number_format($miuY1, 2);
-            // // dd($sampelZ);
-            // // dd($miuY);
-
-            // $z1 = $sampelZ/$miuY;
-            // // dd($z1);
-            // $z = number_format($z1, 2);
-            // // dd($z);
-                        
-        return $z;
+       return $z;
     }
 }

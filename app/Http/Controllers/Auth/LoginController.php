@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Auth;
+
 class LoginController extends Controller
 {
     /*
@@ -25,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/registration';
+    protected $redirectTo = '/home';
     
     /**
      * Create a new controller instance.
@@ -37,25 +39,23 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    // public function redirectPath(){
-    //     $user = \Auth::User();
-    //     $role = $user->roles()->first()->name;
-    //     if ($role == "admin") {
-    //         return "/reborn";
-    //     }
-    //     // elseif ($role == "pengusul") {
-    //     //     return "/pengusul/";
-    //     // }elseif ($role == "penilai") {
-    //     //     return "/penilai/";
+    // public function guard() {
+    //     return Auth::guard('user');
     // }
 
-    protected function authenticated(Request $request, $user){
-        // dd($user->hasRole('admin'));
-        // dd($request->all());
-        // if ($user->hasRole('admin')) {// do your margic here
-        //     return redirect('/reborn');
-        // }else{
-        //     return redirect('/home');
-        // }
-    }
+    // ROLE USER
+    // protected function sendLoginResponse(Request $request)
+    // {
+    //     $request->session()->regenerate();
+
+    //     $this->clearLoginAttempts($request);
+
+    //     foreach ($this->guard()->user()->role as $role) {
+    //         if ($role->name == 'admin') {
+    //             return redirect('/admin/user');
+    //         }elseif ($role->name == 'user') {
+    //             return redirect('/home');
+    //         }
+    //     }
+    // }
 }
