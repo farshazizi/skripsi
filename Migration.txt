@@ -1,0 +1,14 @@
+1. Buka file app/Providers/AppServiceProvider.php
+2. Di line 4 tambahkan kode use Illuminate\Support\Facades\Schema;
+3. Di dalam fungsi boot() isi dengan kode: Schema::defaultStringLength(191);
+4. Jalankan perintah php artisan migrate:refresh enter
+
+php artisan make:migration create_namaTabel_table
+
+php artisan make:migration create_users_table --create=users
+
+php artisan make:migration create_users_table --create=namaTable
+
+php artisan migrate --path=/database/migrations/selected/
+
+php artisan migrate --path=/database/migrations/2017_07_02_093251_create_registration2s_table
