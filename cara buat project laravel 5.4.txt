@@ -1,0 +1,1 @@
+composer create-project laravel/laravel tugas_akhir "5.4.*"
